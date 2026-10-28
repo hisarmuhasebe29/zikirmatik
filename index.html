@@ -667,7 +667,19 @@ const duaById = id => DUALAR.find(d=>d.id===id);
 /* ================= GERİ BİLDİRİM ================= */
 function vibrate(p){ if(!S.settings.vib) return; try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} }
 let AC = null;
-function ac(){ try{ AC ||= new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume(); }catch(e){ AC=null; } return AC; }
+let acUnlocked=false;
+function ac(){
+  try{
+    if(!AC){ AC=new (window.AudioContext||window.webkitAudioContext)(); }
+    if(AC.state!=="running") AC.resume();
+    if(!acUnlocked){ const b=AC.createBuffer(1,1,22050), src=AC.createBufferSource(); src.buffer=b; src.connect(AC.destination); src.start(0); acUnlocked=true; }
+  }catch(e){ AC=null; }
+  return AC;
+}
+/* Telefonlarda ses ancak parmak kalkınca (dokunuş bitince) açılabiliyor; her dokunuşun sonunda sesi hazır tut. */
+["pointerup","touchend","click","keydown"].forEach(ev=>document.addEventListener(ev,()=>{ if(!AC||AC.state!=="running"||!acUnlocked) ac(); },{passive:true,capture:true}));
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible" && AC && AC.state!=="running"){ try{ AC.resume(); }catch(e){} } });
+try{ if(navigator.audioSession) navigator.audioSession.type="transient"; }catch(e){}
 function tone(freq, start, dur, vol){
   const a = ac(); if(!a) return;
   const o = a.createOscillator(), g = a.createGain();
@@ -679,7 +691,8 @@ function tone(freq, start, dur, vol){
 }
 function tick(){ if(S.settings.tapSound) tone(1400,0,0.05,0.08); }
 function bell(){ if(!S.settings.sound) return; tone(880,0,1.4,0.25); tone(1320,0,1.0,0.10); tone(660,0.35,1.6,0.22); tone(990,0.35,1.2,0.08); }
-function chime(){ if(!S.settings.sound) return; tone(1046,0,0.35,0.12); }
+function chime(){ if(!S.settings.sound) return; tone(1046,0,0.45,0.22); tone(1568,0.12,0.4,0.10); }
+function kasemBell(){ if(!S.settings.sound) return; tone(784,0,0.9,0.26); tone(1176,0,0.7,0.10); tone(988,0.28,1.1,0.24); tone(1480,0.28,0.8,0.08); }
 
 let wakeLock = null;
 async function applyWake(){
@@ -781,7 +794,7 @@ function hicri(date,tz){
   try{ const p=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{timeZone:tz,day:"numeric",month:"numeric",year:"numeric"}).formatToParts(date); const g=t=>parseInt(p.find(x=>x.type===t).value,10);
     const y=g("year"), m=g("month"), d=g("day"); if(!(m>=1&&m<=12)) return ""; return d+" "+HICRI_AY[m-1]+" "+y; }catch(e){ return ""; }
 }
-const APP_VER="v.01";
+const APP_VER="v.02";
 const RENKLER=[["mavi","İznik mavisi","#1E52AE","#0F3478"],["yesil","Ravza yeşili","#147A5C","#0A4936"],["turkuaz","Çini turkuazı","#0C8590","#064D55"],["bordo","Osmanlı bordosu","#8C2236","#56111F"],["gece","Gece ve altın","#1C2B50","#E2BC5E"],["mor","Lavanta","#5A45A6","#34266B"],["safir","Safir","#2C3794","#161D5C"],["zeytin","Zeytin dalı","#5E6E2A","#384216"],["kahve","Türk kahvesi","#6B4027","#3F2414"],["gul","Gül kurusu","#A85A72","#6E3044"],["safak","Şafak","#C0601F","#7C3210"],["antrasit","Antrasit","#363B43","#1C1F24"]];
 function applyTheme(){
   const r=document.documentElement;
@@ -887,7 +900,7 @@ function doTap(){
     if(c.count>=t) c.count=0;
     c.count++; c.total++; addDaily(id,1);
     if(c.count>=t){ c.laps++; vibrate([300,120,300,120,500]); bell(); toast(fmt(t)+" tamamlandı · "+c.laps+". tur"); }
-    else if(z.kasem && c.count%z.kasem.her===0){ vibrate([150,80,150,80,150]); chime(); toast("Kasem: "+z.kasem.tr); }
+    else if(z.kasem && c.count%z.kasem.her===0){ vibrate([250,100,250,100,250]); kasemBell(); toast(fmt(c.count)+" · Kasem: "+z.kasem.tr); }
     else if(!z.kasem && S.settings.every33 && c.count%33===0){ vibrate([120,60,120]); chime(); }
     else { vibrate(18); tick(); }
   }
