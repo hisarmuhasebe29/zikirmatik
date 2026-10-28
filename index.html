@@ -26,7 +26,7 @@ img{max-width:100%}
   --bg:#E7EEF9; --surface:#FFFFFF; --surface-2:#F2F6FC; --ink:#122042; --muted:#56648A; --line:#D3DCEC;
   --cobalt:#1D4FA8; --cobalt-soft:#DCE6F8; --coral:#C23E2D; --turq:#0F7F79; --bead-off:#C6D2E8;
   --band-a:#1E52AE; --band-b:#0F3478; --band-fg:#FFFFFF; --band-muted:rgba(255,255,255,.74); --band-chip:rgba(255,255,255,.14);
-  --on-accent:#FFFFFF;
+  --on-accent:#FFFFFF; --ok:#16A34A; --ok-soft:#DCFCE7;
   --f-ui:"Bricolage Grotesque", "Segoe UI", system-ui, -apple-system, sans-serif;
   --f-ar:"Amiri", "Traditional Arabic", "Geeza Pro", serif;
   --r:16px; --ar-scale:1;
@@ -34,11 +34,11 @@ img{max-width:100%}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#08111F; --surface:#111D35; --surface-2:#0C1729; --ink:#E7EDF8; --muted:#94A3C0; --line:#22314F;
   --cobalt:#78A2EE; --cobalt-soft:#1A2B4D; --coral:#EE735F; --turq:#41C3B7; --bead-off:#283A5F;
-  --band-a:#143C86; --band-b:#0A1F4C; --on-accent:#08111F; color-scheme:dark } }
+  --band-a:#143C86; --band-b:#0A1F4C; --on-accent:#08111F; --ok:#4ADE80; --ok-soft:#123524; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#08111F; --surface:#111D35; --surface-2:#0C1729; --ink:#E7EDF8; --muted:#94A3C0; --line:#22314F;
   --cobalt:#78A2EE; --cobalt-soft:#1A2B4D; --coral:#EE735F; --turq:#41C3B7; --bead-off:#283A5F;
-  --band-a:#143C86; --band-b:#0A1F4C; --on-accent:#08111F; color-scheme:dark }
+  --band-a:#143C86; --band-b:#0A1F4C; --on-accent:#08111F; --ok:#4ADE80; --ok-soft:#123524; color-scheme:dark }
 
 html,body{height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:15px;line-height:1.45;-webkit-tap-highlight-color:transparent}
@@ -62,10 +62,41 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .iconbtn svg{width:20px;height:20px}
 .band-info{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:13.5px}
 .band-info .hicri{color:var(--band-muted)}
-.band-info .next{background:var(--band-chip);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:5px 12px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--band-fg)}
+.band-info .next{background:var(--band-chip);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:5px 12px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--band-fg);white-space:nowrap}
+.band-info .next .nl{color:var(--band-muted)}
+.band-info .next b{font-weight:700;font-size:1.08em;letter-spacing:.01em}
+.hgun{cursor:pointer;transition:border-color .15s}
+.hgun:hover,.hgun:focus-visible{border-color:var(--cobalt)}
+.hgun:focus-visible{outline:2px solid var(--cobalt);outline-offset:2px}
+.hgo{align-self:flex-start;display:inline-flex;align-items:center;gap:4px}
+@media (max-width:600px){
+  .band{border-radius:0 0 18px 18px}
+  .band-in{padding-block:8px 10px;gap:6px}
+  .brand h1{font-size:18px}
+  .brand span{font-size:17px}
+  .iconbtn{width:34px;height:34px;border-radius:10px}
+  .iconbtn svg{width:18px;height:18px}
+  .hbtns{gap:6px}
+  .band-info{flex-wrap:nowrap;font-size:12.5px;gap:8px}
+  .band-info .hicri{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .band-info .next{padding:4px 10px;flex:none}
+  .greet{font-size:12.5px}
+  main{padding-top:10px}
+  .view{gap:12px}
+  .seg button{padding:8px 2px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
 
 .app{max-width:600px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 main{padding-block:16px calc(108px + env(safe-area-inset-bottom,0px))}
+.seg .sm{display:none}
+@media (max-width:420px){ .seg .lg{display:none} .seg .sm{display:inline} }
+.fsbar{display:flex;justify-content:flex-end;align-items:center;gap:6px;margin-bottom:10px;font-size:12.5px;color:var(--muted)}
+.fsbar span{margin-right:auto}
+.fsbar button{border:1px solid var(--line);background:var(--surface);border-radius:10px;min-width:44px;height:36px;font-weight:700;font-size:15px;color:var(--ink)}
+.fsbar button[data-fs="-1"]{font-size:13px}
+.fsbar button[aria-disabled="true"]{opacity:.45}
+.fsbar b{min-width:44px;text-align:center;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
+@media (min-width:960px){ .fsbar{max-width:640px;margin-inline:auto;margin-bottom:10px} }
 .sayac-wrap{display:flex;flex-direction:column;gap:16px}
 .hgun{display:flex;flex-direction:column;gap:10px}
 .hgun-h{display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -92,19 +123,20 @@ p{margin:0}
 .seg button{border:0;background:transparent;border-radius:9px;padding:9px 6px;font-weight:600;font-size:14px;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--cobalt);color:var(--on-accent)}
 .zikir-head{text-align:center;display:flex;flex-direction:column;gap:2px;align-items:center}
-.zikir-head .ar{font-family:var(--f-ar);font-size:34px;line-height:1.5;direction:rtl}
-.zikir-head .tr{font-weight:600;font-size:17px}
-.zikir-head .mn{color:var(--muted);font-size:13.5px;max-width:34ch;text-wrap:balance}
+.zikir-head .ar{font-family:var(--f-ar);font-size:28px;line-height:1.7;direction:rtl;max-width:100%;overflow-wrap:anywhere}
+.zikir-head .tr{font-weight:600;font-size:15.5px;line-height:1.35;text-wrap:balance}
+.zikir-head .mn{color:var(--muted);font-size:13px;line-height:1.4;max-width:36ch;text-wrap:balance}
 .change{margin-top:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;color:var(--cobalt);font-weight:600}
 .steps{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+@media (max-width:600px){ .steps{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;margin-inline:-4px;padding-inline:4px} .steps::-webkit-scrollbar{display:none} .steps span{flex:none;white-space:nowrap} }
 .steps span{font-size:12px;padding:4px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
 .steps span.on{background:var(--cobalt-soft);color:var(--cobalt);border-color:transparent;font-weight:600}
 .steps span.done{color:var(--turq)}
 .ringwrap{display:grid;place-items:center}
-.tap{position:relative;width:min(80vw,340px);aspect-ratio:1;max-width:100%;border:0;background:transparent;padding:0;border-radius:50%;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.tap{position:relative;width:clamp(260px,min(88vw,calc(100svh - 400px)),440px);aspect-ratio:1;max-width:100%;border:0;background:transparent;padding:0;border-radius:50%;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 .tap svg{width:100%;height:100%;display:block}
 .tap-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
-.count{font-size:clamp(64px,20vw,96px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em;color:var(--ink)}
+.count{font-size:clamp(68px,22vw,110px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em;color:var(--ink)}
 .of{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
 .done-badge{margin-top:6px;font-size:12px;font-weight:700;color:var(--turq);letter-spacing:.06em;text-transform:uppercase;min-height:16px}
 .meta{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:13.5px;font-variant-numeric:tabular-nums}
@@ -259,7 +291,7 @@ mark{background:var(--cobalt-soft);color:inherit;border-radius:3px;padding:0 1px
 .kasem .ar{font-family:var(--f-ar);font-size:22px;direction:rtl;text-align:right;line-height:1.8}
 .kasem.on{border-style:solid;border-color:var(--coral);background:var(--cobalt-soft)}
 .kasem.on .label{color:var(--coral)}
-.zikir-head .ar.long{font-size:20px;line-height:1.9;max-height:9.5em;overflow:auto;padding-inline:4px}
+.zikir-head .ar.long{font-size:19px;line-height:1.85;max-height:5.6em;overflow:auto;padding-inline:4px}
 .zikir-head .src{font-size:12.5px;color:var(--cobalt);font-weight:600}
 .tablewrap{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:13.5px}
@@ -304,6 +336,17 @@ select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--li
 .dial{width:min(78vw,300px);aspect-ratio:1;max-width:100%}
 .dial svg{width:100%;height:100%;display:block}
 .qnum{text-align:center}
+.dialwrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+.dial .dbg,.dial .qarrow,.feet .foot{transition:fill .25s,stroke .25s}
+.dial.found .dbg{fill:var(--ok-soft);stroke:var(--ok)}
+.dial.found .qarrow,.dial.found .qtop{fill:var(--ok)}
+.dial.found{animation:qpulse 1.2s ease-out 1}
+@keyframes qpulse{0%{transform:scale(1)}30%{transform:scale(1.04)}100%{transform:scale(1)}}
+.feet{margin-top:-4px}
+.feet .foot{fill:var(--bead-off)}
+.dialwrap.found .feet .foot{fill:var(--ok)}
+.qstatus{min-height:30px;font-size:15px;font-weight:600;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.dialwrap.found .qstatus{color:var(--ok);font-size:18px}
 .qnum .big{font-size:44px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
 .qnum .sub{color:var(--muted);font-size:13.5px}
 
@@ -720,6 +763,7 @@ const I = {
   search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>',
   star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg>',
   starOn:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg>',
+  chevR:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="14" height="14" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>',
   play:'<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
   stop:'<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>',
   chev:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'
@@ -794,7 +838,7 @@ function hicri(date,tz){
   try{ const p=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{timeZone:tz,day:"numeric",month:"numeric",year:"numeric"}).formatToParts(date); const g=t=>parseInt(p.find(x=>x.type===t).value,10);
     const y=g("year"), m=g("month"), d=g("day"); if(!(m>=1&&m<=12)) return ""; return d+" "+HICRI_AY[m-1]+" "+y; }catch(e){ return ""; }
 }
-const APP_VER="v.02";
+const APP_VER="v.05";
 const RENKLER=[["mavi","İznik mavisi","#1E52AE","#0F3478"],["yesil","Ravza yeşili","#147A5C","#0A4936"],["turkuaz","Çini turkuazı","#0C8590","#064D55"],["bordo","Osmanlı bordosu","#8C2236","#56111F"],["gece","Gece ve altın","#1C2B50","#E2BC5E"],["mor","Lavanta","#5A45A6","#34266B"],["safir","Safir","#2C3794","#161D5C"],["zeytin","Zeytin dalı","#5E6E2A","#384216"],["kahve","Türk kahvesi","#6B4027","#3F2414"],["gul","Gül kurusu","#A85A72","#6E3044"],["safak","Şafak","#C0601F","#7C3210"],["antrasit","Antrasit","#363B43","#1C1F24"]];
 function applyTheme(){
   const r=document.documentElement;
@@ -806,13 +850,26 @@ function selam(){
   const h=new Date().getHours();
   return h<5?"Hayırlı geceler":h<11?"Hayırlı sabahlar":h<17?"Hayırlı günler":h<22?"Hayırlı akşamlar":"Hayırlı geceler";
 }
+const VAKIT_YON={imsak:"İmsak'a",sabah:"Sabah'a",gunes:"Güneş'e",ogle:"Öğle'ye",ikindi:"İkindi'ye",aksam:"Akşam'a",yatsi:"Yatsı'ya"};
+let bandNext=null;
+function geriSay(ms){ const t=Math.max(0,Math.floor(ms/1000)), h=Math.floor(t/3600), m=Math.floor(t%3600/60), sn=t%60; return (h?h+":"+String(m).padStart(2,"0"):String(m))+":"+String(sn).padStart(2,"0"); }
+function tickBand(){
+  if(!bandNext) return;
+  const left=bandNext.nextAt-Date.now();
+  if(left<=0){ updateBand(); return; }
+  const el=document.getElementById("bandNext");
+  el.innerHTML='<span class="nl">'+VAKIT_YON[bandNext.next]+' kalan</span> <b>'+geriSay(left)+'</b>';
+  el.title=VAKIT_AD[bandNext.next]+" "+hm(bandNext.nextAt,bandNext.p.tz);
+}
+setInterval(tickBand,1000);
 function updateBand(){
   const g=document.getElementById("bandGreet");
   if(S.ad){ g.hidden=false; g.innerHTML=esc(selam())+", <b>"+esc(S.ad)+"</b>"; } else g.hidden=true;
   const st=nowState();
   const h=hicri(st.now, st.p.tz);
   document.getElementById("bandHicri").textContent = (h?h+" · ":"")+st.p.name;
-  document.getElementById("bandNext").textContent = VAKIT_AD[st.next]+" "+hm(st.nextAt,st.p.tz)+" · "+dur(st.nextAt-st.now)+" kaldı";
+  bandNext=st;
+  tickBand();
 }
 
 /* ================= SAYAÇ ================= */
@@ -860,11 +917,11 @@ function viewSayac(){
   const longAr = (z.ar||"").length>70;
   const kasem = !seq && z.kasem ? '<div class="kasem'+(count>0 && count%z.kasem.her===0 && count<target?' on':'')+'"><span class="label">Her '+z.kasem.her+'’de bir kasem · sıradaki: '+fmt((Math.floor(count/z.kasem.her)+1)*z.kasem.her)+'</span><div class="ar" lang="ar">'+esc(z.kasem.ar)+'</div><span><b>'+esc(z.kasem.tr)+'</b></span><span class="note">'+esc(z.kasem.mn)+'</span></div>' : '';
   const gh = gununHadisi();
-  const aside = '<aside class="card hgun" aria-label="Günün hadisi"><div class="hgun-h"><span class="label">Günün Hadis-i Şerifi</span><span class="hsrc">'+esc(gh.src)+'</span></div>'+
+  const aside = '<aside class="card hgun" data-hadis="'+gh.i+'" role="link" tabindex="0" aria-label="Günün hadisi, tamamını Hadis-i Şerifler sekmesinde aç"><div class="hgun-h"><span class="label">Günün Hadis-i Şerifi</span><span class="hsrc">'+esc(gh.src)+'</span></div>'+
     '<div class="arbox"><div class="ar" lang="ar">'+esc(gh.ar)+'</div></div><p class="ok">'+esc(gh.ok)+'</p><p class="hml">'+esc(gh.ml)+'</p>'+
-    '<button class="change" data-go="hadisler" style="align-self:flex-start">Tüm hadis-i şerifler</button></aside>';
+    '<span class="change hgo">Tüm hadis-i şerifler '+I.chevR+'</span></aside>';
   return '<div class="sayac-wrap"><section class="view">'+
-    '<div class="seg s3" role="group" aria-label="Mod"><button data-mode="serbest" aria-pressed="'+(S.mode==="serbest")+'">Serbest zikir</button><button data-mode="tesbihat" aria-pressed="'+(S.mode==="tesbihat")+'">Namaz tesbihatı</button><button data-mode="diger" aria-pressed="'+(S.mode==="diger")+'">Diğer tesbihler</button></div>'+
+    '<div class="seg s3" role="group" aria-label="Mod"><button data-mode="serbest" aria-pressed="'+(S.mode==="serbest")+'"><span class="lg">Serbest zikir</span><span class="sm">Serbest</span></button><button data-mode="tesbihat" aria-pressed="'+(S.mode==="tesbihat")+'"><span class="lg">Namaz tesbihatı</span><span class="sm">Tesbihat</span></button><button data-mode="diger" aria-pressed="'+(S.mode==="diger")+'"><span class="lg">Diğer tesbihler</span><span class="sm">Diğer</span></button></div>'+
     steps+
     '<div class="zikir-head">'+(src?'<div class="src">'+esc(src)+'</div>':'')+'<div class="ar'+(longAr?' long':'')+'" lang="ar">'+esc(z.ar||"")+'</div><div class="tr">'+esc(z.ok&&z.tr.includes("…")?z.ok:z.tr)+'</div>'+(z.ok&&!z.tr.includes("…")?'<div class="mn" style="font-style:italic">'+esc(z.ok)+'</div>':'')+'<div class="mn">'+esc(z.mn||"")+'</div>'+
       (S.mode==="serbest"?'<button class="change" data-go="zikirler">Zikri değiştir</button>':S.mode==="diger"?'<button class="change" data-go="tesbihler">Tesbihi değiştir</button>':'')+'</div>'+
@@ -948,7 +1005,7 @@ function viewTesbihler(){
       '<div class="prog"><i style="width:'+(Math.min(1,c.count/t)*100).toFixed(1)+'%"></i></div>'+
       '<div class="tfoot"><span class="note">'+fmt(c.count)+' / '+fmt(t)+(c.laps?' · '+c.laps+' tur':'')+'</span><button class="btn primary" data-open="'+it.id+'">Sayaçta aç</button></div></div>';
   };
-  return '<section class="view"><div class="toolbar"><span class="note">Notlarınızdaki tesbihler · Arapça, okunuş, anlam ve adet</span><div class="fs" role="group" aria-label="Arapça yazı boyutu"><button id="arMinus" aria-label="Arapça yazıyı küçült">A−</button><button id="arPlus" aria-label="Arapça yazıyı büyüt">A+</button></div></div>'+
+  return '<section class="view"><div class="toolbar"><span class="note">Notlarınızdaki tesbihler · Arapça, okunuş, anlam ve adet</span></div>'+
     TES_GRUP.map(([g,l,d])=>'<div class="tsec"><h2>'+l+' <small>'+d+'</small></h2>'+TESBIHLER.filter(t=>t.g===g).map(card).join("")+'</div>').join("")+'</section>';
 }
 
@@ -1006,7 +1063,7 @@ function viewDualar(){
   const firstOpen = S.duaGrup!=="sureler";
   return '<section class="view">'+
     '<div class="subnav" role="group" aria-label="Dua grubu">'+DUA_GRUP.map(([k,l])=>'<button class="chip" data-grup="'+k+'" aria-pressed="'+(S.duaGrup===k)+'">'+l+'</button>').join("")+'</div>'+
-    '<div class="toolbar"><span class="note">'+list.length+(S.duaGrup==="sureler"?' sure':' dua')+' · Arapça, okunuş ve Türkçe anlam</span><div class="fs" role="group" aria-label="Arapça yazı boyutu"><button id="arMinus" aria-label="Arapça yazıyı küçült">A−</button><button id="arPlus" aria-label="Arapça yazıyı büyüt">A+</button></div></div>'+
+    '<div class="toolbar"><span class="note">'+list.length+(S.duaGrup==="sureler"?' sure':' dua')+' · Arapça, okunuş ve Türkçe anlam</span></div>'+
     '<div class="list">'+list.map((d,i)=>duaCard(d, openDua ? d.id===openDua : (firstOpen && i===0 && !openSet.size))).join("")+'</div></section>';
 }
 document.getElementById("main").addEventListener("toggle",e=>{ const el=e.target; if(el.classList && el.classList.contains("dua")){ if(el.open) openSet.add(el.dataset.id); else openSet.delete(el.dataset.id); } },true);
@@ -1065,7 +1122,7 @@ function hadisCard(h, mark){
   const fav = (S.favH||[]).includes(h.i);
   const hl = t => { if(!mark) return esc(t); const words=mark.split(/\s+/).filter(w=>w.length>1); let out=esc(t);
     words.forEach(w=>{ const re=new RegExp("("+w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&").split("").map(ch=>({a:"[aâ]",i:"[iıîİI]",u:"[uûü]",o:"[oö]",c:"[cç]",s:"[sş]",g:"[gğ]"}[ch]||ch)).join("")+")","gi"); out=out.replace(re,"<mark>$1</mark>"); }); return out; };
-  return '<article class="card hcard">'+
+  return '<article class="card hcard" id="hadis-'+h.i+'">'+
     '<div class="hhead"><span class="hsrc">'+esc(h.src)+'</span><button class="fav" data-fav="'+h.i+'" aria-pressed="'+fav+'" aria-label="'+(fav?"Favorilerden çıkar":"Favorilere ekle")+'">'+(fav?I.starOn:I.star)+'</button></div>'+
     '<div class="arbox"><div class="ar" lang="ar">'+esc(h.ar)+'</div></div>'+
     '<div><div class="label">Okunuşu</div><p class="ok" style="margin-top:4px">'+hl(h.ok)+'</p></div>'+
@@ -1524,21 +1581,36 @@ let heading=null, compassOn=false, kibleMsg="";
 function dialSVG(bearing){
   const rot = heading==null ? 0 : -heading;
   let s='<svg viewBox="0 0 300 300" aria-label="Kıble yönü göstergesi"><g id="dialRot" transform="rotate('+rot.toFixed(1)+' 150 150)">';
-  s+='<circle cx="150" cy="150" r="138" fill="var(--surface)" stroke="var(--line)"/>';
+  s+='<circle class="dbg" cx="150" cy="150" r="138" fill="var(--surface)" stroke="var(--line)" stroke-width="2"/>';
   for(let i=0;i<72;i++){ const a=rad(i*5), big=i%18===0, mid=i%6===0, r1=138, r2=big?120:mid?126:131;
     s+='<line x1="'+(150+r1*Math.sin(a)).toFixed(1)+'" y1="'+(150-r1*Math.cos(a)).toFixed(1)+'" x2="'+(150+r2*Math.sin(a)).toFixed(1)+'" y2="'+(150-r2*Math.cos(a)).toFixed(1)+'" stroke="var(--muted)" stroke-width="'+(big?2:1)+'"/>'; }
   [["K",0],["D",90],["G",180],["B",270]].forEach(([t,a])=>{ s+='<text x="'+(150+104*Math.sin(rad(a))).toFixed(1)+'" y="'+(150-104*Math.cos(rad(a))+6).toFixed(1)+'" text-anchor="middle" font-size="17" font-weight="700" fill="'+(t==="K"?'var(--coral)':'var(--muted)')+'" font-family="Bricolage Grotesque, system-ui, sans-serif">'+t+'</text>'; });
-  s+='<g transform="rotate('+bearing.toFixed(1)+' 150 150)"><path d="M150 36 L161 150 L150 162 L139 150 Z" fill="var(--cobalt)"/><path d="M150 162 L161 150 L150 232 L139 150 Z" fill="var(--bead-off)"/><rect x="138" y="22" width="24" height="24" rx="3" fill="var(--ink)"/><rect x="138" y="28" width="24" height="3" fill="var(--coral)"/></g>';
-  s+='<circle cx="150" cy="150" r="7" fill="var(--ink)"/></g><path d="M150 4 L157 16 L143 16 Z" fill="var(--coral)"/></svg>';
+  s+='<g transform="rotate('+bearing.toFixed(1)+' 150 150)"><path class="qarrow" d="M150 36 L161 150 L150 162 L139 150 Z" fill="var(--cobalt)"/><path d="M150 162 L161 150 L150 232 L139 150 Z" fill="var(--bead-off)"/><rect x="138" y="22" width="24" height="24" rx="3" fill="var(--ink)"/><rect x="138" y="28" width="24" height="3" fill="var(--coral)"/></g>';
+  s+='<circle cx="150" cy="150" r="7" fill="var(--ink)"/></g><path class="qtop" d="M150 4 L157 16 L143 16 Z" fill="var(--coral)"/></svg>';
   return s;
 }
+const FEET_SVG='<svg viewBox="0 0 80 64" width="74" height="60"><g class="foot" transform="translate(25 36) rotate(-8) scale(-1 1)"><path d="M0 -14c6 0 8 6 7 13-1 6-2 9-1 14 1 5-2 9-6 9s-7-4-6-9c1-5 0-8-1-13-1-8 1-14 7-14z"/><circle cx="-5" cy="-21" r="2.6"/><circle cx="-0.5" cy="-23.5" r="2.4"/><circle cx="3.8" cy="-22.5" r="2.1"/><circle cx="7" cy="-19.5" r="1.8"/><circle cx="9" cy="-15.8" r="1.5"/></g><g class="foot" transform="translate(55 36) rotate(8)"><path d="M0 -14c6 0 8 6 7 13-1 6-2 9-1 14 1 5-2 9-6 9s-7-4-6-9c1-5 0-8-1-13-1-8 1-14 7-14z"/><circle cx="-5" cy="-21" r="2.6"/><circle cx="-0.5" cy="-23.5" r="2.4"/><circle cx="3.8" cy="-22.5" r="2.1"/><circle cx="7" cy="-19.5" r="1.8"/><circle cx="9" cy="-15.8" r="1.5"/></g></svg>';
+let qBearing=0, qFound=false;
+function foundBell(){ if(!S.settings.sound) return; tone(659,0,0.5,0.24); tone(880,0.14,0.55,0.22); tone(1319,0.28,0.9,0.18); }
+function updateQibla(){
+  if(heading==null) return;
+  const dial=document.getElementById("dial"), st=document.getElementById("qStatus"); if(!dial||!st) return;
+  let d=((qBearing-heading)%360+540)%360-180;
+  const ad=Math.abs(d);
+  if(!qFound && ad<=5){ qFound=true; vibrate([200,80,200]); foundBell(); }
+  else if(qFound && ad>10){ qFound=false; }
+  dial.classList.toggle("found",qFound); dial.parentElement.classList.toggle("found",qFound);
+  st.innerHTML = qFound ? '<b>Kıbleye döndünüz</b>' : (d>0?'Sağa dönün · ':'Sola dönün · ')+Math.round(ad)+'°';
+}
 function viewKible(){
-  const p=place(), q=qibla(p.lat,p.lon);
+  const p=place(), q=qibla(p.lat,p.lon); qBearing=q.bearing; qFound=false;
   return '<section class="view">'+
     '<div class="card" style="display:grid;gap:10px"><label class="label" for="citySelK">Konum</label>'+citySelect("citySelK")+
       '<div class="actions"><button class="btn" id="geoBtn">Konumumu bul</button><button class="btn primary" id="compassBtn">'+(compassOn?"Pusula açık":"Pusulayı başlat")+'</button></div>'+
       ((kibleMsg||geoMsg)?'<p class="note warn" role="status">'+esc(kibleMsg||geoMsg)+'</p>':'')+'</div>'+
-    '<div class="dialwrap"><div class="dial">'+dialSVG(q.bearing)+'</div></div>'+
+    '<div class="dialwrap"><div class="dial" id="dial">'+dialSVG(q.bearing)+'</div>'+
+      '<div class="feet" aria-hidden="true">'+FEET_SVG+'</div>'+
+      '<div class="qstatus" id="qStatus" role="status">'+(heading==null?'Pusulayı başlatın, telefonu yere paralel tutun':'')+'</div></div>'+
     '<div class="qnum"><div class="big">'+q.bearing.toFixed(1)+'°</div><div class="sub">'+esc(p.name)+' için kuzeyden saat yönünde · '+yon(q.bearing)+' · Kâbe\'ye '+fmt(Math.round(q.km))+' km</div></div>'+
     '<div class="card"><p class="note">'+(heading==null
       ? 'Telefonunuzun pusula uygulamasını açın ve <b style="color:var(--ink)">'+q.bearing.toFixed(0)+'°</b> yönüne dönün. Pusula sensörü çalıştığında ok kendiliğinden kıbleyi gösterir.'
@@ -1550,6 +1622,7 @@ function onOrient(e){
   else if(e.absolute && typeof e.alpha==="number") h=(360-e.alpha)%360;
   if(h==null) return;
   heading=h; const g=document.getElementById("dialRot"); if(g) g.setAttribute("transform","rotate("+(-h).toFixed(1)+" 150 150)");
+  updateQibla();
 }
 async function startCompass(){
   kibleMsg="";
@@ -1635,13 +1708,30 @@ document.getElementById("sheetHost").addEventListener("change",e=>{ const k=e.ta
 
 /* ================= ÇİZİM VE OLAYLAR ================= */
 const main=document.getElementById("main");
+const FS_MIN=0.85, FS_MAX=1.6;
+function fsBar(z){
+  return '<div class="fsbar" role="group" aria-label="Yazı boyutu"><span>Yazı boyutu</span>'+
+    '<button data-fs="-1" aria-label="Yazıyı küçült"'+(z<=FS_MIN?' aria-disabled="true"':'')+'>A−</button>'+
+    '<b>%'+Math.round(z*100)+'</b>'+
+    '<button data-fs="1" aria-label="Yazıyı büyüt"'+(z>=FS_MAX?' aria-disabled="true"':'')+'>A+</button></div>';
+}
 function render(){
   renderTabs();
-  main.innerHTML = ({sayac:viewSayac, vakitler:viewVakitler, dualar:viewDualar, hadisler:viewHadisler, rehber:viewRehber, kible:viewKible, tesbihler:viewTesbihler, zikirler:viewZikirler, istatistik:viewIstatistik}[tab])();
+  requestAnimationFrame(()=>{ const on=document.querySelector(".steps .on"); if(on){ const p=on.parentElement; p.scrollLeft=on.offsetLeft-p.clientWidth/2+on.offsetWidth/2; } });
+  const html = ({sayac:viewSayac, vakitler:viewVakitler, dualar:viewDualar, hadisler:viewHadisler, rehber:viewRehber, kible:viewKible, tesbihler:viewTesbihler, zikirler:viewZikirler, istatistik:viewIstatistik}[tab])();
+  if(tab==="sayac") main.innerHTML = html;
+  else { const z=S.fs||1; main.innerHTML = fsBar(z)+'<div class="zoomwrap" style="zoom:'+z+'">'+html+'</div>'; }
 }
 main.addEventListener("pointerdown",e=>{ if(e.target.closest("#tap")){ e.preventDefault(); doTap(); } });
 main.addEventListener("keydown",e=>{ if(e.target.id==="tap" && (e.key===" "||e.key==="Enter")){ e.preventDefault(); doTap(); setTimeout(()=>{ const t=document.getElementById("tap"); t&&t.focus(); },0); } });
+function openHadis(i){
+  hQuery=""; hKonu=""; hFav=false; go("hadisler");
+  const el=document.getElementById("hadis-"+i);
+  if(el){ el.scrollIntoView({block:"center"}); el.classList.add("hl"); }
+}
+main.addEventListener("keydown",e=>{ const hc=e.target.closest&&e.target.closest("[data-hadis]"); if(hc && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); openHadis(+hc.dataset.hadis); } });
 main.addEventListener("click",e=>{
+  const hc=e.target.closest("[data-hadis]"); if(hc){ openHadis(+hc.dataset.hadis); return; }
   const b=e.target.closest("button"); if(!b) return;
   if(b.dataset.mode){ S.mode=b.dataset.mode; confirmReset=false; save(); render(); return; }
   if(b.dataset.open){ const it=tById(b.dataset.open); if(it.turkce) return; S.diger=it.id; S.mode="diger"; save(); go("sayac"); return; }
@@ -1657,6 +1747,7 @@ main.addEventListener("click",e=>{
   if(b.dataset.konu!==undefined && tab==="hadisler"){ hKonu = hKonu===b.dataset.konu ? "" : b.dataset.konu; hFav=false; refreshHadis(); if(!b.classList.contains("chip")) window.scrollTo({top:0,behavior:"smooth"}); return; }
   if(b.dataset.hfav){ hFav=!hFav; hKonu=""; refreshHadis(); return; }
   if(b.id==="hClear"){ hQuery=""; hKonu=""; hFav=false; const q=document.getElementById("hQ"); if(q) q.value=""; refreshHadis(); return; }
+  if(b.dataset.fs){ const z=+(Math.min(FS_MAX,Math.max(FS_MIN,(S.fs||1)+(+b.dataset.fs)*0.1))).toFixed(2); if(z===(S.fs||1)){ toast(z>=FS_MAX?"En büyük boyuttasınız":"En küçük boyuttasınız"); return; } const y=window.scrollY, r=y/Math.max(1,document.body.scrollHeight); S.fs=z; save(); render(); window.scrollTo(0, r*document.body.scrollHeight); return; }
   if(b.dataset.play){ e.preventDefault(); ac(); startPlay(b.dataset.play); return; }
   if(b.dataset.hiz){ S.hiz=+b.dataset.hiz; save(); if(player.audio){ player.audio.defaultPlaybackRate=player.audio.playbackRate=S.hiz; } document.querySelectorAll("[data-hiz]").forEach(x=>x.setAttribute("aria-pressed",String(+x.dataset.hiz===S.hiz))); return; }
   if(b.dataset.gor){ S.surahGor=b.dataset.gor; save(); const y=window.scrollY; render(); window.scrollTo(0,y); playMark(); return; }
