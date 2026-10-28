@@ -1,5 +1,5 @@
 // Zikirmatik service worker: uygulamayı internetsiz de açılır yapar.
-const CACHE = "zikirmatik-v1";
+const CACHE = "zikirmatik-v5";
 const FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
