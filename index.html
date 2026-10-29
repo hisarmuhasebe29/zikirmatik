@@ -97,6 +97,16 @@ main{padding-block:16px calc(108px + env(safe-area-inset-bottom,0px))}
 .fsbar button[aria-disabled="true"]{opacity:.45}
 .fsbar b{min-width:44px;text-align:center;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
 @media (min-width:960px){ .fsbar{max-width:640px;margin-inline:auto;margin-bottom:10px} }
+.iconbtn[aria-current="page"]{background:var(--band-fg);color:var(--band-a)}
+.band-info .hicri{display:flex;flex-direction:column;gap:1px;line-height:1.3}
+.band-info .miladi{color:var(--band-fg);font-weight:600}
+.esgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.escard{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:14px 10px}
+.esno{position:absolute;top:8px;left:10px;font-size:11.5px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.esar{font-family:var(--f-ar);font-size:calc(26px * var(--ar-scale));line-height:1.7;direction:rtl;color:var(--cobalt);margin-top:6px}
+.estr{font-size:14.5px;font-weight:700}
+.esml{font-size:13px;color:var(--muted);line-height:1.4;margin:0}
+@media (max-width:420px){ .hbtns{gap:4px} .iconbtn{width:32px;height:32px} .brand span{display:none} }
 .sayac-wrap{display:flex;flex-direction:column;gap:16px}
 .hgun{display:flex;flex-direction:column;gap:10px}
 .hgun-h{display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -380,7 +390,7 @@ select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--li
 
 /* Sekmeler */
 nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));z-index:20}
-nav.tabs .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+nav.tabs .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(6,minmax(0,1fr))}
 nav.tabs button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;padding:6px 0;font-size:10.5px;line-height:1.15;text-align:center;font-weight:600;color:var(--muted);border-radius:10px}
 nav.tabs button svg{width:21px;height:21px;flex:none}
 nav.tabs button span{max-width:9ch;text-wrap:balance}
@@ -441,13 +451,15 @@ nav.tabs button[aria-current="page"]{color:var(--cobalt)}
     <div class="bar-top">
       <div class="brand"><h1>Zikirmatik</h1><span>ذِكْر</span></div>
       <div class="hbtns">
+        <button class="iconbtn" id="openKible" aria-label="Kıble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 5.5l2.6 6.5L12 18.5 9.4 12z"/></svg></button>
+        <button class="iconbtn" id="openEsma" aria-label="Esmâü'l-Hüsnâ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.5l2.2 3.1 3.7-.9.4 3.8 3.4 1.7-1.9 3.3 1.9 3.3-3.4 1.7-.4 3.8-3.7-.9L12 21.5l-2.2-3.1-3.7.9-.4-3.8-3.4-1.7 1.9-3.3-1.9-3.3 3.4-1.7.4-3.8 3.7.9z"/><text x="12" y="15.2" text-anchor="middle" font-size="8.2" font-weight="700" fill="currentColor" stroke="none" font-family="system-ui,sans-serif">99</text></svg></button>
         <button class="iconbtn" id="openTheme" aria-label="Tema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 0-18c4.97 0 9 3.58 9 8 0 2.76-2.24 4-4.5 4H15a2 2 0 0 0-1.4 3.4c.4.4.6.9.6 1.4 0 .7-.6 1.2-1.2 1.2z"/><circle cx="7.5" cy="10.5" r="1.2"/><circle cx="12" cy="7.5" r="1.2"/><circle cx="16.5" cy="10.5" r="1.2"/></svg></button>
         <button class="iconbtn" id="openStats" aria-label="İstatistik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M5 20V12M10 20V6M15 20v-9M20 20V9"/></svg></button>
         <button class="iconbtn" id="openSettings" aria-label="Ayarlar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
       </div>
     </div>
     <div class="greet" id="bandGreet" hidden></div>
-    <div class="band-info"><span class="hicri" id="bandHicri"></span><span class="next" id="bandNext"></span></div>
+    <div class="band-info"><span class="hicri"><b class="miladi" id="bandMiladi"></b><span id="bandHicri"></span></span><span class="next" id="bandNext"></span></div>
   </div>
 </div>
 <div class="app"><main id="main"></main></div>
@@ -649,17 +661,13 @@ const TESBIHLER = [
   {id:"t_vird", g:"vird", t:"Sabah–akşam virdi", s:"Sırayla okunur, sayaç kendiliğinden ilerler", steps:[
     {tr:"Yâ Selâm", ar:"يَا سَلَامُ", mn:"Ey her türlü kusurdan uzak olan ve esenlik veren Allah'ım.", n:142},
     {tr:"Selâmün kavlen min rabbin rahîm", ar:"سَلَامٌ قَوْلًا مِنْ رَبٍّ رَحِيمٍ", mn:"Çok merhametli Rab'den bir söz olarak selam. (Yâsîn 58)", n:100},
-    {tr:"Lâ havle velâ kuvvete illâ billâhi'l-aliyyi'l-azîm", ar:"لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللّٰهِ الْعَلِيِّ الْعَظِيمِ", mn:"Güç ve kuvvet ancak yüce ve büyük olan Allah'ın yardımıyladır.", n:100},
-    {tr:"Âyetü'l-Kürsî", dua:"ayetelkursi", n:1},
-    {tr:"İhlâs Sûresi", dua:"ihlas", n:3},
-    {tr:"Felak Sûresi", dua:"felak", n:3},
-    {tr:"Nâs Sûresi", dua:"nas", n:3},
-    {tr:"Bismillâhillezî lâ yedurru…", ok:"Bismillâhillezî lâ yedurru measmihî şey'ün fi'l-ardı ve lâ fi's-semâi ve hüve's-semîu'l-alîm.", ar:"بِسْمِ اللّٰهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ", mn:"Adıyla birlikte yerde ve gökte hiçbir şeyin zarar veremeyeceği Allah'ın adıyla. O her şeyi işiten, her şeyi bilendir.", n:3}
+    {tr:"Lâ havle velâ kuvvete illâ billâhi'l-aliyyi'l-azîm", ar:"لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللّٰهِ الْعَلِيِّ الْعَظِيمِ", mn:"Güç ve kuvvet ancak yüce ve büyük olan Allah'ın yardımıyladır.", n:100}
   ]},
   {id:"t_yunus", g:"nebi", tr:"Lâ ilâhe illâ ente sübhâneke innî küntü mine'z-zâlimîn", ar:"لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ", mn:"Senden başka ilah yoktur. Seni her türlü eksiklikten uzak tutarım. Ben gerçekten kendine yazık edenlerden oldum.", src:"Hz. Yûnus · Enbiyâ 87", hedef:41},
   {id:"t_ibrahim", g:"nebi", tr:"Hasbünallâhü ve ni'me'l-vekîl, ni'me'l-mevlâ ve ni'me'n-nasîr", ar:"حَسْبُنَا اللّٰهُ وَنِعْمَ الْوَكِيلُ نِعْمَ الْمَوْلٰى وَنِعْمَ النَّصِيرُ", mn:"Allah bize yeter, O ne güzel vekildir. O ne güzel dost ve ne güzel yardımcıdır.", src:"Hz. İbrâhîm", hedef:100},
   {id:"t_musa1", g:"nebi", tr:"Rabbi'şrah lî sadrî ve yessir lî emrî vahlul ukdeten min lisânî yefkahû kavlî", ar:"رَبِّ اشْرَحْ لِي صَدْرِي ۝ وَيَسِّرْ لِي أَمْرِي ۝ وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي ۝ يَفْقَهُوا قَوْلِي", mn:"Rabbim! Gönlüme genişlik ver, işimi kolaylaştır, dilimdeki düğümü çöz ki sözümü anlasınlar.", src:"Hz. Mûsâ · Tâhâ 25–28", hedef:21},
   {id:"t_musa2", g:"nebi", tr:"Rabbi innî limâ enzelte ileyye min hayrin fakîr", ar:"رَبِّ إِنِّي لِمَا أَنْزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ", mn:"Rabbim! Bana indireceğin her hayra gerçekten muhtacım.", src:"Hz. Mûsâ · Kasas 24", hedef:100},
+  {id:"t_fetih", g:"nebi", tr:"İnnâ fetahnâ leke fethan mübînâ", ar:"إِنَّا فَتَحْنَا لَكَ فَتْحًا مُبِينًا", mn:"Şüphesiz biz sana apaçık bir fetih verdik. Niyet: Allah'ım, önümdeki kapıları bana aç.", src:"Fetih 1", hedef:100},
   {id:"t_nuh", g:"nebi", tr:"Rabbi innî mağlûbun fentesır", ar:"رَبِّ إِنِّي مَغْلُوبٌ فَانْتَصِرْ", mn:"Rabbim! Ben yenik düştüm, bana yardım et.", src:"Hz. Nûh · Kamer 10", hedef:100},
   {id:"t_galib", g:"ozel", tr:"Vallâhü gâlibün alâ emrihî", ar:"وَاللّٰهُ غَالِبٌ عَلٰى أَمْرِهِ", mn:"Allah, emrini yerine getirmeye her zaman galiptir; dilediğini mutlaka gerçekleştirir.", src:"Yûsuf 21 · 1461 defa", hedef:1461,
     kasem:{her:100, tr:"Vallâhi inneke le-gâlibün alâ emrik", ar:"وَاللّٰهِ إِنَّكَ لَغَالِبٌ عَلٰى أَمْرِكَ", mn:"Allah'a yemin ederim ki sen emrinde galipsin."}},
@@ -667,14 +675,15 @@ const TESBIHLER = [
     {tr:"Ferdün Hayyün Kayyûmün … li'l-Hayyi'l-Kayyûm", ok:"Bismillâhirrahmânirrahîm. Ferdün Hayyün Kayyûmün, Hakemün Adlün Kuddûsün, aneti'l-vücûhü li'l-Hayyi'l-Kayyûm.", ar:"بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيمِ ۝ فَرْدٌ حَيٌّ قَيُّومٌ حَكَمٌ عَدْلٌ قُدُّوسٌ عَنَتِ الْوُجُوهُ لِلْحَيِّ الْقَيُّومِ", mn:"Rahmân ve Rahîm olan Allah'ın adıyla. O tektir, diridir, her şeyi ayakta tutandır; hüküm sahibidir, adildir, her eksiklikten uzaktır. Yüzler, diri ve her şeyi ayakta tutan Allah'a boyun eğmiştir.", n:11},
     {tr:"Ferdün Hayyün Kayyûmün … mine'l-kavmi'z-zâlimîn", ok:"Bismillâhirrahmânirrahîm. Ferdün Hayyün Kayyûmün, Hakemün Adlün Kuddûsün, neccinî mine'l-kavmi'z-zâlimîn.", ar:"بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيمِ ۝ فَرْدٌ حَيٌّ قَيُّومٌ حَكَمٌ عَدْلٌ قُدُّوسٌ نَجِّنِي مِنَ الْقَوْمِ الظَّالِمِينَ", mn:"Rahmân ve Rahîm olan Allah'ın adıyla. O tektir, diridir, her şeyi ayakta tutandır; hüküm sahibidir, adildir, her eksiklikten uzaktır. Beni zalimler topluluğundan kurtar.", n:3}
   ]},
-  {id:"t_fetih", g:"ozel", tr:"İnnâ fetahnâ leke fethan mübînâ", ar:"إِنَّا فَتَحْنَا لَكَ فَتْحًا مُبِينًا", mn:"Şüphesiz biz sana apaçık bir fetih verdik. Niyet: Allah'ım, önümdeki kapıları bana aç.", src:"Fetih 1", hedef:100},
   {id:"t_estagfir", g:"ozel", tr:"Estağfirullâhe'l-azîm", ar:"أَسْتَغْفِرُ اللّٰهَ الْعَظِيمَ", mn:"Yüce Allah'tan bağışlanma dilerim.", src:"İstiğfar", hedef:100},
+  {id:"t_tevhid", g:"ozel", tr:"Lâ ilâhe illallâh", ar:"لَا إِلٰهَ إِلَّا اللّٰهُ", mn:"Allah'tan başka ibadete layık hiçbir ilah yoktur. Peygamberimiz bunu zikrin en faziletlisi olarak bildirmiştir (Tirmizî).", src:"Kelime-i tevhid", hedef:100},
   {id:"t_mani", g:"esma", tr:"Yâ Mâni'", ar:"يَا مَانِعُ", mn:"Bazı şeylerin meydana gelmesine izin vermeyen, zararı engelleyen.", src:"el-Mâni'", hedef:100},
   {id:"t_kadir", g:"esma", tr:"Yâ Kâdir", ar:"يَا قَادِرُ", mn:"Her şeye gücü yeten.", src:"el-Kâdir", hedef:100},
   {id:"t_fettah", g:"esma", tr:"Yâ Fettâh", ar:"يَا فَتَّاحُ", mn:"Her türlü zorluğu kolaylaştıran, darlıktan kurtaran.", src:"el-Fettâh", hedef:100},
   {id:"t_cebbar", g:"esma", tr:"Yâ Cebbâr", ar:"يَا جَبَّارُ", mn:"İstediğini mutlaka yapan, dilediğinde her şeye gücü yeten.", src:"el-Cebbâr", hedef:100},
-  {id:"t_imtihan", g:"turkce", tr:"Allah'ım, biz imtihan ehli değiliz; beni bu şekilde imtihan etme.", turkce:1},
-  {id:"t_hayr", g:"turkce", tr:"Rabbim! Bana indireceğin her hayra gerçekten muhtacım.", turkce:1, ref:"t_musa2"}
+  {id:"t_korku", g:"turkce", tr:"Rabbim, korktuklarımdan emin, umduklarıma nail eyle.", turkce:1, hedef:100},
+  {id:"t_imtihan", g:"turkce", tr:"Allah'ım, biz imtihan ehli değiliz; beni bu şekilde imtihan etme.", turkce:1, hedef:100},
+  {id:"t_hayr", g:"turkce", tr:"Rabbim! Bana indireceğin her hayra gerçekten muhtacım.", turkce:1, ref:"t_musa2", hedef:100}
 ];
 const tById = id => TESBIHLER.find(t=>t.id===id);
 const stepFull = s => { if(!s.dua) return s; const d=DUALAR.find(x=>x.id===s.dua); return Object.assign({ar:d.ar, ok:d.ok, mn:d.ml}, s); };
@@ -768,11 +777,12 @@ const I = {
   stop:'<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>',
   chev:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'
 };
-const TABS = [["sayac","Sayaç"],["vakitler","Vakitler"],["dualar","Dualar ve Sureler"],["hadisler","Hadis-i Şerifler"],["rehber","İlmihal"],["kible","Kıble"],["tesbihler","Tesbihler"]];
-const VIEWS = ["sayac","vakitler","dualar","hadisler","rehber","kible","tesbihler","zikirler","istatistik"];
+const TABS = [["sayac","Sayaç"],["vakitler","Namaz Vakitleri"],["dualar","Dualar ve Sureler"],["hadisler","Hadis-i Şerifler"],["rehber","İlmihal"],["tesbihler","Tesbihler"]];
+const VIEWS = ["sayac","vakitler","dualar","hadisler","rehber","kible","esma","tesbihler","zikirler","istatistik"];
 let tab = (location.hash||"").replace("#","");
 if(!VIEWS.includes(tab)) tab = "sayac";
-function renderTabs(){
+function markHead(){ [["openKible","kible"],["openEsma","esma"],["openStats","istatistik"]].forEach(([id,t])=>{ const b=document.getElementById(id); if(b) b.setAttribute("aria-current", tab===t?"page":"false"); }); }
+function renderTabs(){ markHead();
   const active = tab==="zikirler" ? "sayac" : tab;
   document.getElementById("tabs").innerHTML = TABS.map(([k,l])=>'<button data-tab="'+k+'"'+(k===active?' aria-current="page"':'')+'>'+I[k]+'<span>'+l+'</span></button>').join("");
 }
@@ -838,7 +848,7 @@ function hicri(date,tz){
   try{ const p=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{timeZone:tz,day:"numeric",month:"numeric",year:"numeric"}).formatToParts(date); const g=t=>parseInt(p.find(x=>x.type===t).value,10);
     const y=g("year"), m=g("month"), d=g("day"); if(!(m>=1&&m<=12)) return ""; return d+" "+HICRI_AY[m-1]+" "+y; }catch(e){ return ""; }
 }
-const APP_VER="v.05";
+const APP_VER="v.07";
 const RENKLER=[["mavi","İznik mavisi","#1E52AE","#0F3478"],["yesil","Ravza yeşili","#147A5C","#0A4936"],["turkuaz","Çini turkuazı","#0C8590","#064D55"],["bordo","Osmanlı bordosu","#8C2236","#56111F"],["gece","Gece ve altın","#1C2B50","#E2BC5E"],["mor","Lavanta","#5A45A6","#34266B"],["safir","Safir","#2C3794","#161D5C"],["zeytin","Zeytin dalı","#5E6E2A","#384216"],["kahve","Türk kahvesi","#6B4027","#3F2414"],["gul","Gül kurusu","#A85A72","#6E3044"],["safak","Şafak","#C0601F","#7C3210"],["antrasit","Antrasit","#363B43","#1C1F24"]];
 function applyTheme(){
   const r=document.documentElement;
@@ -868,6 +878,7 @@ function updateBand(){
   const st=nowState();
   const h=hicri(st.now, st.p.tz);
   document.getElementById("bandHicri").textContent = (h?h+" · ":"")+st.p.name;
+  try{ document.getElementById("bandMiladi").textContent = new Intl.DateTimeFormat("tr-TR",{timeZone:st.p.tz,day:"numeric",month:"long",year:"numeric",weekday:"long"}).format(st.now); }catch(e){}
   bandNext=st;
   tickBand();
 }
@@ -876,14 +887,14 @@ function updateBand(){
 let confirmReset = false;
 function seqCtx(){
   if(S.mode==="tesbihat") return {steps:TESBIHAT.map(s=>Object.assign({}, zById(s.id), s)), st:S.tes, statId:i=>TESBIHAT[i].id, item:null};
-  if(S.mode==="diger"){ const it=tById(S.diger); if(it && it.steps){ S.seqs[it.id] ||= {step:0,count:0}; return {steps:it.steps.map(stepFull), st:S.seqs[it.id], statId:i=>it.id+"#"+i, item:it}; } }
+  if(S.mode==="diger"){ const it=tById(S.diger); if(it && it.steps){ S.seqs[it.id] ||= {step:0,count:0}; if(S.seqs[it.id].step>=it.steps.length) S.seqs[it.id]={step:0,count:0}; return {steps:it.steps.map(stepFull), st:S.seqs[it.id], statId:i=>it.id+"#"+i, item:it}; } }
   return null;
 }
 function ctx(){
   const seq=seqCtx();
   if(seq){ const s=seq.steps[seq.st.step]; return {seq, z:s, target:s.n, count:seq.st.count}; }
   let id = S.mode==="diger" ? S.diger : S.current;
-  if(S.mode==="diger" && (!tById(id) || tById(id).turkce)){ S.diger="t_vird"; return ctx(); }
+  if(S.mode==="diger" && !tById(id)){ S.diger="t_vird"; return ctx(); }
   const z=zById(id), c=ctr(id); return {id, z, target:targetOf(id), count:c.count, laps:c.laps};
 }
 function ringSVG(count, target){
@@ -986,9 +997,13 @@ function doReset(){
 /* ================= DİĞER TESBİHLER ================= */
 function viewTesbihler(){
   const card = it => {
-    if(it.turkce) return '<div class="card tcard"><p style="font-size:16px;font-weight:600;max-width:60ch">'+esc(it.tr)+'</p>'+(it.ref?'<button class="dl" style="align-self:flex-start" data-open="'+it.ref+'">Arapçası: '+esc(tById(it.ref).tr)+'</button>':'<p class="note">Kendi dilinizle, içten okunacak dua. Adet yoktur.</p>')+'</div>';
+    if(it.turkce){ const c=S.counters[it.id]||{count:0,laps:0}, t=targetOf(it.id);
+      return '<div class="card tcard"><div class="thead"><p style="font-size:16.5px;font-weight:600;max-width:60ch;line-height:1.45">'+esc(it.tr)+'</p><div class="adet"><b>'+fmt(t)+'</b><span>defa</span></div></div>'+
+        (it.ref?'<button class="dl" style="align-self:flex-start" data-open="'+it.ref+'">Arapçası: '+esc(tById(it.ref).tr)+'</button>':'<p class="note">Kendi dilinizle, içten okunacak dua.</p>')+
+        '<div class="prog"><i style="width:'+(Math.min(1,c.count/t)*100).toFixed(1)+'%"></i></div>'+
+        '<div class="tfoot"><span class="note">'+fmt(c.count)+' / '+fmt(t)+(c.laps?' · '+c.laps+' tur':'')+'</span><button class="btn primary" data-open="'+it.id+'">Sayaçta aç</button></div></div>'; }
     if(it.steps){
-      const st=S.seqs[it.id]||{step:0,count:0}, steps=it.steps.map(stepFull), total=steps.reduce((a,s)=>a+s.n,0);
+      let st=S.seqs[it.id]||{step:0,count:0}; const steps=it.steps.map(stepFull), total=steps.reduce((a,s)=>a+s.n,0); if(st.step>=steps.length) st={step:0,count:0};
       const doneN=steps.slice(0,st.step).reduce((a,s)=>a+s.n,0)+Math.min(st.count,steps[st.step].n);
       return '<div class="card tcard"><div class="thead"><div><b>'+esc(it.t)+'</b><small>'+esc(it.s)+'</small></div><div class="adet"><b>'+total+'</b><span>toplam</span></div></div>'+
         '<div class="seqlist">'+steps.map((s,i)=>'<div class="'+(i<st.step?'done':(i===st.step&&doneN>0?'on':''))+'"><i>'+(i<st.step?'✓':i+1)+'</i><span>'+esc(s.tr)+(s.tahmin?' <span class="guess">· adet önerildi</span>':'')+'</span><b>'+s.n+'×</b></div>').join("")+'</div>'+
@@ -1155,6 +1170,23 @@ function viewHadisler(){
 function refreshHadis(){ const r=document.getElementById("hRes"); if(r) r.innerHTML=hadisResults(); document.querySelectorAll("[data-konu].chip").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.konu===hKonu))); const f=document.querySelector("[data-hfav]"); if(f) f.setAttribute("aria-pressed",String(hFav)); }
 let hT;
 document.getElementById("main").addEventListener("input",e=>{ if(e.target.id==="hQ"){ hQuery=e.target.value; clearTimeout(hT); hT=setTimeout(refreshHadis,120); } });
+
+const ESMA=[{"n":1,"ar":"اللّٰهُ","tr":"Allah","ml":"Bütün isim ve sıfatları kendinde toplayan, ibadete layık tek varlık."},{"n":2,"ar":"الرَّحْمَنُ","tr":"er-Rahmân","ml":"Dünyada bütün yaratılmışlara merhamet eden."},{"n":3,"ar":"الرَّحِيمُ","tr":"er-Rahîm","ml":"Ahirette müminlere sonsuz merhamet eden."},{"n":4,"ar":"الْمَلِكُ","tr":"el-Melik","ml":"Mülkün ve kâinatın gerçek sahibi."},{"n":5,"ar":"الْقُدُّوسُ","tr":"el-Kuddûs","ml":"Her türlü eksiklikten uzak, tertemiz."},{"n":6,"ar":"السَّلاَمُ","tr":"es-Selâm","ml":"Esenlik veren, her türlü tehlikeden kurtaran."},{"n":7,"ar":"الْمُؤْمِنُ","tr":"el-Mü'min","ml":"Güven veren, vaadine sadık olan."},{"n":8,"ar":"الْمُهَيْمِنُ","tr":"el-Müheymin","ml":"Her şeyi gözetip koruyan."},{"n":9,"ar":"الْعَزِيزُ","tr":"el-Azîz","ml":"Mağlup edilmesi imkânsız, üstün ve şerefli."},{"n":10,"ar":"الْجَبَّارُ","tr":"el-Cebbâr","ml":"Dilediğini zorla da olsa yaptıran, kırıkları onaran."},{"n":11,"ar":"الْمُتَكَبِّرُ","tr":"el-Mütekebbir","ml":"Büyüklükte eşi benzeri olmayan."},{"n":12,"ar":"الْخَالِقُ","tr":"el-Hâlık","ml":"Yoktan var eden, yaratan."},{"n":13,"ar":"الْبَارِئُ","tr":"el-Bâri'","ml":"Her şeyi kusursuz ve uyumlu yaratan."},{"n":14,"ar":"الْمُصَوِّرُ","tr":"el-Musavvir","ml":"Her şeye bir şekil ve suret veren."},{"n":15,"ar":"الْغَفَّارُ","tr":"el-Gaffâr","ml":"Günahları çokça bağışlayan."},{"n":16,"ar":"الْقَهَّارُ","tr":"el-Kahhâr","ml":"Her şeye, her istediğini yapacak şekilde galip olan."},{"n":17,"ar":"الْوَهَّابُ","tr":"el-Vehhâb","ml":"Karşılıksız bol bol veren."},{"n":18,"ar":"الرَّزَّاقُ","tr":"er-Rezzâk","ml":"Bütün canlıların rızkını veren."},{"n":19,"ar":"الْفَتَّاحُ","tr":"el-Fettâh","ml":"Her türlü zorluğu kolaylaştıran, hayır kapılarını açan."},{"n":20,"ar":"الْعَلِيمُ","tr":"el-Alîm","ml":"Her şeyi en ince ayrıntısıyla bilen."},{"n":21,"ar":"الْقَابِضُ","tr":"el-Kâbız","ml":"Dilediğine rızkı daraltan, ruhları alan."},{"n":22,"ar":"الْبَاسِطُ","tr":"el-Bâsıt","ml":"Dilediğine rızkı genişleten."},{"n":23,"ar":"الْخَافِضُ","tr":"el-Hâfıd","ml":"Dilediğini alçaltan."},{"n":24,"ar":"الرَّافِعُ","tr":"er-Râfi'","ml":"Dilediğini yükselten."},{"n":25,"ar":"الْمُعِزُّ","tr":"el-Muiz","ml":"Dilediğine izzet ve şeref veren."},{"n":26,"ar":"الْمُذِلُّ","tr":"el-Müzil","ml":"Dilediğini zillete düşüren."},{"n":27,"ar":"السَّمِيعُ","tr":"es-Semî'","ml":"Her şeyi işiten."},{"n":28,"ar":"الْبَصِيرُ","tr":"el-Basîr","ml":"Her şeyi gören."},{"n":29,"ar":"الْحَكَمُ","tr":"el-Hakem","ml":"Mutlak hakem, hakkı batıldan ayıran."},{"n":30,"ar":"الْعَدْلُ","tr":"el-Adl","ml":"Mutlak adalet sahibi."},{"n":31,"ar":"اللَّطِيفُ","tr":"el-Latîf","ml":"Lütfu bol, en ince işleri bilen."},{"n":32,"ar":"الْخَبِيرُ","tr":"el-Habîr","ml":"Her şeyin içyüzünden haberdar olan."},{"n":33,"ar":"الْحَلِيمُ","tr":"el-Halîm","ml":"Cezada acele etmeyen, yumuşak davranan."},{"n":34,"ar":"الْعَظِيمُ","tr":"el-Azîm","ml":"Büyüklükte benzeri olmayan."},{"n":35,"ar":"الْغَفُورُ","tr":"el-Gafûr","ml":"Affı ve mağfireti bol olan."},{"n":36,"ar":"الشَّكُورُ","tr":"eş-Şekûr","ml":"Az amele çok sevap veren."},{"n":37,"ar":"الْعَلِيُّ","tr":"el-Aliyy","ml":"Yüceler yücesi."},{"n":38,"ar":"الْكَبِيرُ","tr":"el-Kebîr","ml":"Büyüklükte sınırı olmayan."},{"n":39,"ar":"الْحَفِيظُ","tr":"el-Hafîz","ml":"Her şeyi koruyan ve muhafaza eden."},{"n":40,"ar":"الْمُقِيتُ","tr":"el-Mukît","ml":"Her yaratılmışın gıdasını veren, gözeten."},{"n":41,"ar":"الْحَسِيبُ","tr":"el-Hasîb","ml":"Kulların hesabını gören, herkese yeten."},{"n":42,"ar":"الْجَلِيلُ","tr":"el-Celîl","ml":"Celâl ve azamet sahibi."},{"n":43,"ar":"الْكَرِيمُ","tr":"el-Kerîm","ml":"Keremi, lütfu ve ihsanı bol olan."},{"n":44,"ar":"الرَّقِيبُ","tr":"er-Rakîb","ml":"Her şeyi her an gözetip kontrol eden."},{"n":45,"ar":"الْمُجِيبُ","tr":"el-Mücîb","ml":"Duaları kabul eden."},{"n":46,"ar":"الْوَاسِعُ","tr":"el-Vâsi'","ml":"Rahmeti, ilmi ve kudreti her şeyi kuşatan."},{"n":47,"ar":"الْحَكِيمُ","tr":"el-Hakîm","ml":"Her işi hikmetli olan."},{"n":48,"ar":"الْوَدُودُ","tr":"el-Vedûd","ml":"Kullarını seven ve sevilmeye layık olan."},{"n":49,"ar":"الْمَجِيدُ","tr":"el-Mecîd","ml":"Şanı yüce, şerefi büyük."},{"n":50,"ar":"الْبَاعِثُ","tr":"el-Bâis","ml":"Ölüleri dirilten, peygamber gönderen."},{"n":51,"ar":"الشَّهِيدُ","tr":"eş-Şehîd","ml":"Her zaman her yerde hazır ve nazır olan."},{"n":52,"ar":"الْحَقُّ","tr":"el-Hakk","ml":"Varlığı hiç değişmeden duran, gerçeğin ta kendisi."},{"n":53,"ar":"الْوَكِيلُ","tr":"el-Vekîl","ml":"Kendisine güvenilip dayanılan."},{"n":54,"ar":"الْقَوِيُّ","tr":"el-Kaviyy","ml":"Kudreti en üstün ve hiç azalmayan."},{"n":55,"ar":"الْمَتِينُ","tr":"el-Metîn","ml":"Kuvvet ve kudret kaynağı, sarsılmayan."},{"n":56,"ar":"الْوَلِيُّ","tr":"el-Veliyy","ml":"İnananların dostu, onları sevip yardım eden."},{"n":57,"ar":"الْحَمِيدُ","tr":"el-Hamîd","ml":"Övülmeye layık olan."},{"n":58,"ar":"الْمُحْصِي","tr":"el-Muhsî","ml":"Her şeyin sayısını bilen."},{"n":59,"ar":"الْمُبْدِئُ","tr":"el-Mübdi'","ml":"İlk defa yaratan."},{"n":60,"ar":"الْمُعِيدُ","tr":"el-Muîd","ml":"Yarattıklarını yok edip tekrar dirilten."},{"n":61,"ar":"الْمُحْيِي","tr":"el-Muhyî","ml":"Can veren, dirilten."},{"n":62,"ar":"الْمُمِيتُ","tr":"el-Mümît","ml":"Ölümü yaratan."},{"n":63,"ar":"الْحَىُّ","tr":"el-Hayy","ml":"Diri ve ezelî hayat sahibi."},{"n":64,"ar":"الْقَيُّومُ","tr":"el-Kayyûm","ml":"Her şeyi ayakta tutan, varlığı kendinden olan."},{"n":65,"ar":"الْوَاجِدُ","tr":"el-Vâcid","ml":"Dilediğini dilediği vakit bulan, hiçbir şeye muhtaç olmayan."},{"n":66,"ar":"الْمَاجِدُ","tr":"el-Mâcid","ml":"Kadri ve şanı büyük, keremi bol."},{"n":67,"ar":"الْوَاحِدُ","tr":"el-Vâhid","ml":"Zâtında, sıfatlarında ve işlerinde tek olan."},{"n":68,"ar":"الصَّمَدُ","tr":"es-Samed","ml":"Hiçbir şeye ihtiyacı olmayan, her şeyin O'na muhtaç olduğu."},{"n":69,"ar":"الْقَادِرُ","tr":"el-Kâdir","ml":"Her şeye gücü yeten."},{"n":70,"ar":"الْمُقْتَدِرُ","tr":"el-Muktedir","ml":"Kudret sahiplerinin üzerinde mutlak kudret sahibi."},{"n":71,"ar":"الْمُقَدِّمُ","tr":"el-Mukaddim","ml":"Dilediğini öne alan."},{"n":72,"ar":"الْمُؤَخِّرُ","tr":"el-Muahhir","ml":"Dilediğini geriye bırakan."},{"n":73,"ar":"الأَوَّلُ","tr":"el-Evvel","ml":"Varlığının başlangıcı olmayan."},{"n":74,"ar":"الآخِرُ","tr":"el-Âhir","ml":"Varlığının sonu olmayan."},{"n":75,"ar":"الظَّاهِرُ","tr":"ez-Zâhir","ml":"Varlığı açık, delilleri her yerde görünen."},{"n":76,"ar":"الْبَاطِنُ","tr":"el-Bâtın","ml":"Akılların kavrayamayacağı kadar gizli olan."},{"n":77,"ar":"الْوَالِي","tr":"el-Vâlî","ml":"Bütün kâinatı yöneten."},{"n":78,"ar":"الْمُتَعَالِي","tr":"el-Müteâlî","ml":"Yaratılmışların hiçbir sıfatına benzemeyen, son derece yüce."},{"n":79,"ar":"الْبَرُّ","tr":"el-Berr","ml":"İyiliği ve ihsanı bol olan."},{"n":80,"ar":"التَّوَّابُ","tr":"et-Tevvâb","ml":"Tövbeleri kabul eden."},{"n":81,"ar":"الْمُنْتَقِمُ","tr":"el-Müntekım","ml":"Suçluları adaletle cezalandıran."},{"n":82,"ar":"الْعَفُوُّ","tr":"el-Afüvv","ml":"Affı çok olan, günahları silen."},{"n":83,"ar":"الرَّءُوفُ","tr":"er-Raûf","ml":"Çok şefkatli olan."},{"n":84,"ar":"مَالِكُ الْمُلْكِ","tr":"Mâlikü'l-Mülk","ml":"Mülkün ebedî sahibi."},{"n":85,"ar":"ذُو الْجَلاَلِ وَالإِكْرَامِ","tr":"Zü'l-Celâli ve'l-İkrâm","ml":"Celâl, azamet ve ikram sahibi."},{"n":86,"ar":"الْمُقْسِطُ","tr":"el-Muksit","ml":"Bütün işlerini adaletle yapan."},{"n":87,"ar":"الْجَامِعُ","tr":"el-Câmi'","ml":"Her şeyi bir araya toplayan."},{"n":88,"ar":"الْغَنِيُّ","tr":"el-Ganiyy","ml":"Hiçbir şeye muhtaç olmayan, zengin."},{"n":89,"ar":"الْمُغْنِي","tr":"el-Muğnî","ml":"Dilediğini zengin eden."},{"n":90,"ar":"الْمَانِعُ","tr":"el-Mâni'","ml":"Dilemediği şeye engel olan."},{"n":91,"ar":"الضَّارُّ","tr":"ed-Dârr","ml":"Hikmeti gereği zarar veren şeyleri yaratan."},{"n":92,"ar":"النَّافِعُ","tr":"en-Nâfi'","ml":"Fayda veren şeyleri yaratan."},{"n":93,"ar":"النُّورُ","tr":"en-Nûr","ml":"Âlemleri nurlandıran, gönüllere nur veren."},{"n":94,"ar":"الْهَادِي","tr":"el-Hâdî","ml":"Hidayet veren, doğru yola ileten."},{"n":95,"ar":"الْبَدِيعُ","tr":"el-Bedî'","ml":"Eşi benzeri olmayan güzellikte yaratan."},{"n":96,"ar":"الْبَاقِي","tr":"el-Bâkî","ml":"Varlığının sonu olmayan, ebedî."},{"n":97,"ar":"الْوَارِثُ","tr":"el-Vâris","ml":"Her şeyin gerçek sahibi, mülkün asıl vârisi."},{"n":98,"ar":"الرَّشِيدُ","tr":"er-Reşîd","ml":"Bütün işleri isabetli olan, doğru yolu gösteren."},{"n":99,"ar":"الصَّبُورُ","tr":"es-Sabûr","ml":"Çok sabırlı olan, cezada acele etmeyen."}];
+
+let esmaQ="";
+function esmaCards(){
+  const q=trNorm(esmaQ.trim());
+  const list=ESMA.filter(e=>!q || trNorm(e.tr+" "+e.ml+" "+e.ar+" "+e.n).includes(q));
+  if(!list.length) return '<div class="card empty">“'+esc(esmaQ.trim())+'” ile eşleşen isim bulunamadı.</div>';
+  return '<div class="esgrid">'+list.map(e=>'<article class="card escard"><span class="esno">'+e.n+'</span><div class="esar" lang="ar">'+esc(e.ar)+'</div><b class="estr">'+esc(e.tr)+'</b><p class="esml">'+esc(e.ml)+'</p></article>').join("")+'</div>';
+}
+function viewEsma(){
+  return '<section class="view"><div class="hero hday"><span class="lbl">Esmâü\'l-Hüsnâ · Allah\'ın en güzel isimleri</span><span style="font-size:15px;line-height:1.5">“Allah\'ın doksan dokuz ismi vardır. Kim onları sayarsa (anlayıp gereğince yaşarsa) cennete girer.” (Buhârî, Müslim)</span></div>'+
+    '<div class="hsearch"><span class="hsi">'+I.search+'</span><input id="esmaQ" type="search" autocomplete="off" placeholder="İsim ya da anlam arayın: Rahmân, rızık…" value="'+esc(esmaQ)+'" aria-label="Esmâü\'l-Hüsnâ\'da ara"></div>'+
+    '<div id="esmaRes">'+esmaCards()+'</div>'+
+    '<p class="note">İsimlerin sırası ve Arapçası Tirmizî\'deki rivayete (Daavât, 82) göredir. Türkçe anlamlar özet olarak verilmiştir.</p></section>';
+}
+document.getElementById("main").addEventListener("input",e=>{ if(e.target.id==="esmaQ"){ esmaQ=e.target.value; const r=document.getElementById("esmaRes"); if(r) r.innerHTML=esmaCards(); } });
 
 /* ================= NAMAZ REHBERİ ================= */
 const NAMAZLAR = [
@@ -1684,6 +1716,8 @@ function openTheme(){
     '<button class="btn" id="closeSettings" style="margin-top:12px">Tamam</button></div></div>';
 }
 document.getElementById("openTheme").addEventListener("click",openTheme);
+document.getElementById("openKible").addEventListener("click",()=>go("kible"));
+document.getElementById("openEsma").addEventListener("click",()=>go("esma"));
 function yedekKodu(){ const o=Object.assign({},S); delete o.lastNotified; return btoa(unescape(encodeURIComponent(JSON.stringify({v:1,s:o})))); }
 document.getElementById("sheetHost").addEventListener("click",async e=>{
   const b=e.target.closest("button"); if(!b) return;
@@ -1718,7 +1752,7 @@ function fsBar(z){
 function render(){
   renderTabs();
   requestAnimationFrame(()=>{ const on=document.querySelector(".steps .on"); if(on){ const p=on.parentElement; p.scrollLeft=on.offsetLeft-p.clientWidth/2+on.offsetWidth/2; } });
-  const html = ({sayac:viewSayac, vakitler:viewVakitler, dualar:viewDualar, hadisler:viewHadisler, rehber:viewRehber, kible:viewKible, tesbihler:viewTesbihler, zikirler:viewZikirler, istatistik:viewIstatistik}[tab])();
+  const html = ({esma:viewEsma, sayac:viewSayac, vakitler:viewVakitler, dualar:viewDualar, hadisler:viewHadisler, rehber:viewRehber, kible:viewKible, tesbihler:viewTesbihler, zikirler:viewZikirler, istatistik:viewIstatistik}[tab])();
   if(tab==="sayac") main.innerHTML = html;
   else { const z=S.fs||1; main.innerHTML = fsBar(z)+'<div class="zoomwrap" style="zoom:'+z+'">'+html+'</div>'; }
 }
@@ -1734,7 +1768,7 @@ main.addEventListener("click",e=>{
   const hc=e.target.closest("[data-hadis]"); if(hc){ openHadis(+hc.dataset.hadis); return; }
   const b=e.target.closest("button"); if(!b) return;
   if(b.dataset.mode){ S.mode=b.dataset.mode; confirmReset=false; save(); render(); return; }
-  if(b.dataset.open){ const it=tById(b.dataset.open); if(it.turkce) return; S.diger=it.id; S.mode="diger"; save(); go("sayac"); return; }
+  if(b.dataset.open){ const it=tById(b.dataset.open); if(!it) return; S.diger=it.id; S.mode="diger"; save(); go("sayac"); return; }
   if(b.dataset.met){ S.method=b.dataset.met; save(); render(); updateBand(); return; }
   if(b.dataset.go){ go(b.dataset.go); return; }
   if(b.dataset.pick){ S.current=b.dataset.pick; S.mode="serbest"; save(); go("sayac"); return; }
