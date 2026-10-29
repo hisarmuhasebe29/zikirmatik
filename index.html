@@ -180,6 +180,10 @@ main{padding-block:16px calc(108px + env(safe-area-inset-bottom,0px))}
 .okbadge{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;font-weight:800;font-size:20px}
 .mitem b.wrap{white-space:normal;line-height:1.3}
 .madet{flex:none;font-weight:700;color:var(--cobalt);font-variant-numeric:tabular-nums;background:var(--cobalt-soft);border-radius:999px;padding:3px 10px;font-size:13px}
+.tsira{display:flex;flex-direction:column;gap:6px}
+.tsira-h{display:flex;align-items:center;gap:8px;padding-left:2px}
+.tnum{width:26px;height:26px;border-radius:50%;background:var(--cobalt);color:var(--on-accent);display:grid;place-items:center;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums}
+.tgrp{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .sayac-wrap{display:flex;flex-direction:column;gap:16px}
 .hgun{display:flex;flex-direction:column;gap:10px}
 .hgun-h{display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -740,9 +744,9 @@ const GUNLER = [
 const HICRI_AY = ["Muharrem","Safer","Rebîülevvel","Rebîülâhir","Cemâziyelevvel","Cemâziyelâhir","Recep","Şâban","Ramazan","Şevval","Zilkade","Zilhicce"];
 
 /* Diğer tesbihler (kullanıcının notlarından). tahmin: notta adet yazmıyor, öneri olarak ayarlandı */
-const TES_GRUP = [["vird","Sabah–akşam virdi","Her sabah ve akşam"],["nebi","Peygamber duaları","Kur'an'daki dualar"],["ozel","Özel okumalar","Usûlüyle okunanlar"],["esma","Esmâü'l-Hüsnâ","İsimler ve anlamları"],["turkce","Türkçe dualar","Kendi dilinizle"]];
+const TES_GRUP = [["vird","Sabah - Akşam Okunacak","Her sabah ve akşam"],["nebi","Peygamber duaları","Kur'an'daki dualar"],["ozel","Özel okumalar","Usûlüyle okunanlar"],["esma","Esmâü'l-Hüsnâ","İsimler ve anlamları"],["turkce","Türkçe dualar","Kendi dilinizle"]];
 const TESBIHLER = [
-  {id:"t_vird", g:"vird", t:"Sabah–akşam virdi", s:"Sırayla okunur, sayaç kendiliğinden ilerler", steps:[
+  {id:"t_vird", g:"vird", t:"Sabah - Akşam Okunacak", s:"Sırayla okunur, sayaç kendiliğinden ilerler", steps:[
     {tr:"Yâ Selâm", ar:"يَا سَلَامُ", mn:"Ey her türlü kusurdan uzak olan ve esenlik veren Allah'ım.", n:142},
     {tr:"Selâmün kavlen min rabbin rahîm", ar:"سَلَامٌ قَوْلًا مِنْ رَبٍّ رَحِيمٍ", mn:"Çok merhametli Rab'den bir söz olarak selam. (Yâsîn 58)", n:100},
     {tr:"Lâ havle velâ kuvvete illâ billâhi'l-aliyyi'l-azîm", ar:"لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللّٰهِ الْعَلِيِّ الْعَظِيمِ", mn:"Güç ve kuvvet ancak yüce ve büyük olan Allah'ın yardımıyladır.", n:100}
@@ -769,6 +773,9 @@ const TESBIHLER = [
   {id:"t_imtihan", g:"turkce", tr:"Allah'ım, biz imtihan ehli değiliz; beni bu şekilde imtihan etme.", turkce:1, hedef:100},
   {id:"t_hayr", g:"turkce", tr:"Rabbim! Bana indireceğin her hayra gerçekten muhtacım.", turkce:1, ref:"t_musa2", hedef:100}
 ];
+TESBIHLER.splice(1,0,{id:"t_bismillah", g:"vird", tr:"Bismillâhillezî lâ yedurru ma'asmihî şey'ün fi'l-ardı ve lâ fi's-semâi ve hüve's-semîu'l-alîm", ar:"بِسْمِ اللّٰهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ", mn:"Adıyla birlikte yerde ve gökte hiçbir şeyin zarar veremeyeceği Allah'ın adıyla. O her şeyi işiten, her şeyi bilendir. Sabah ve akşam üçer defa okuyana hiçbir şeyin zarar vermeyeceği bildirilmiştir.", src:"Sabah ve akşam 3 defa · Ebû Dâvûd, Tirmizî", hedef:3});
+const TES_SIRA=["t_vird","t_bismillah","t_fetih","t_imtihan","t_korku","t_hayr","t_yunus","t_ibrahim","t_musa1","t_nuh","t_estagfir","t_tevhid"];
+TESBIHLER.sort((a,b)=>{ const x=TES_SIRA.indexOf(a.id), y=TES_SIRA.indexOf(b.id); return (x<0?99:x)-(y<0?99:y); });
 const tById = id => TESBIHLER.find(t=>t.id===id);
 const stepFull = s => { if(!s.dua) return s; const d=DUALAR.find(x=>x.id===s.dua); return Object.assign({ar:d.ar, ok:d.ok, mn:d.ml}, s); };
 
@@ -951,7 +958,7 @@ function hicri(date,tz){
   try{ const p=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{timeZone:tz,day:"numeric",month:"numeric",year:"numeric"}).formatToParts(date); const g=t=>parseInt(p.find(x=>x.type===t).value,10);
     const y=g("year"), m=g("month"), d=g("day"); if(!(m>=1&&m<=12)) return ""; return d+" "+HICRI_AY[m-1]+" "+y; }catch(e){ return ""; }
 }
-const APP_VER="v.11";
+const APP_VER="v.12";
 const RENKLER=[["mavi","İznik mavisi","#1E52AE","#0F3478"],["yesil","Ravza yeşili","#147A5C","#0A4936"],["turkuaz","Çini turkuazı","#0C8590","#064D55"],["bordo","Osmanlı bordosu","#8C2236","#56111F"],["gece","Gece ve altın","#1C2B50","#E2BC5E"],["mor","Lavanta","#5A45A6","#34266B"],["safir","Safir","#2C3794","#161D5C"],["zeytin","Zeytin dalı","#5E6E2A","#384216"],["kahve","Türk kahvesi","#6B4027","#3F2414"],["gul","Gül kurusu","#A85A72","#6E3044"],["safak","Şafak","#C0601F","#7C3210"],["antrasit","Antrasit","#363B43","#1C1F24"],["gumus","Gümüş","#C4CAD3","#5B6573"],["siyahbeyaz","Siyah beyaz","#111111","#FFFFFF"]];
 function applyTheme(){
   const r=document.documentElement;
@@ -1068,7 +1075,7 @@ function siradakiler(){
 function siradakiKart(){
   return '<button class="btn primary nextbtn" data-opennext="1">Sıradaki tesbihi seç '+I.chevR+'</button>';
 }
-const TG_AD={vird:"Sabah–akşam virdi",nebi:"Peygamber duaları",ozel:"Özel okumalar",esma:"Esmâü'l-Hüsnâ",turkce:"Türkçe dualar"};
+const TG_AD={vird:"Sabah - Akşam Okunacak",nebi:"Peygamber duaları",ozel:"Özel okumalar",esma:"Esmâü'l-Hüsnâ",turkce:"Türkçe dualar"};
 function openNext(){
   const list=siradakiler();
   const nm=t=>t.t||t.tr, adet=t=>t.steps?t.steps.reduce((a,x)=>a+x.n,0):targetOf(t.id);
@@ -1155,7 +1162,7 @@ function viewTesbihler(){
       '<div class="tfoot"><span class="note">'+fmt(c.count)+' / '+fmt(t)+(c.laps?' · '+c.laps+' tur':'')+'</span><button class="btn primary" data-open="'+it.id+'">Sayaçta aç</button></div></div>';
   };
   return '<section class="view"><div class="toolbar"><span class="note">Notlarınızdaki tesbihler · Arapça, okunuş, anlam ve adet</span></div>'+
-    TES_GRUP.map(([g,l,d])=>'<div class="tsec"><h2>'+l+' <small>'+d+'</small></h2>'+TESBIHLER.filter(t=>t.g===g).map(card).join("")+'</div>').join("")+'</section>';
+    '<div class="list">'+TESBIHLER.map((it,i)=>'<div class="tsira"><div class="tsira-h"><span class="tnum">'+(i+1)+'</span><span class="tgrp">'+esc(TG_AD[it.g]||"")+'</span></div>'+card(it)+'</div>').join("")+'</div></section>';
 }
 
 /* ================= ZİKİRLER ================= */
