@@ -107,6 +107,55 @@ main{padding-block:16px calc(108px + env(safe-area-inset-bottom,0px))}
 .estr{font-size:14.5px;font-weight:700}
 .esml{font-size:13px;color:var(--muted);line-height:1.4;margin:0}
 @media (max-width:420px){ .hbtns{gap:4px} .iconbtn{width:32px;height:32px} .brand span{display:none} }
+.mlist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:6px}
+.mlast{margin-top:14px}
+.mitem{display:flex;align-items:center;gap:12px;padding:13px 14px;border:0;background:var(--surface);text-align:left;width:100%}
+.mitem + .mitem{border-top:1px solid var(--line)}
+.mitem .mic{width:36px;height:36px;border-radius:10px;background:var(--cobalt-soft);color:var(--cobalt);display:grid;place-items:center;flex:none}
+.mitem .mtx{flex:1;display:flex;flex-direction:column;min-width:0}
+.mitem .mtx b{font-size:15px;font-weight:600}
+.mitem .mtx small{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mitem > svg{color:var(--muted)}
+.mitem[aria-current="page"] .mtx b{color:var(--cobalt)}
+.esmabtn svg{width:24px;height:24px}
+.tknav{display:grid;grid-template-columns:1fr auto 1fr;gap:8px}
+.tknav .btn{padding:10px 12px}
+.leaf{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 1px 0 var(--line),0 6px 0 -3px var(--surface-2),0 7px 0 -3px var(--line)}
+.leaf .lf-top{display:flex;justify-content:space-between;gap:10px;font-weight:700;color:var(--cobalt);font-size:14px;text-transform:uppercase;letter-spacing:.06em}
+.leaf .lf-day{font-size:clamp(96px,30vw,150px);font-weight:800;line-height:.95;text-align:center;letter-spacing:-.04em;color:var(--ink);font-variant-numeric:tabular-nums}
+.leaf.cuma .lf-day{color:var(--ok)}
+.leaf .lf-mub{align-self:center;background:var(--coral);color:var(--on-accent);font-weight:700;border-radius:999px;padding:5px 14px;font-size:14px;text-align:center}
+.leaf .lf-cal{display:grid;grid-template-columns:1fr 1fr;gap:10px;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding-block:10px;text-align:center}
+.leaf .lf-cal small,.leaf .lf-vk small{display:block;color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em}
+.leaf .lf-cal b{font-size:15px}
+.leaf .lf-kh{text-align:center;color:var(--muted);font-size:13px}
+.leaf .lf-vk{display:grid;grid-template-columns:repeat(auto-fit,minmax(68px,1fr));gap:6px;text-align:center}
+.leaf .lf-vk b{font-size:17px;font-variant-numeric:tabular-nums}
+.leaf.arka section{display:flex;flex-direction:column;gap:6px;border-top:1px dashed var(--line);padding-top:12px}
+.leaf.arka h3{margin:0;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--cobalt)}
+.leaf.arka .ar{font-family:var(--f-ar);font-size:calc(21px * var(--ar-scale));direction:rtl;text-align:right;line-height:1.85}
+.leaf.arka .ok{font-style:italic;color:var(--muted);font-size:14px}
+.leaf.arka p{margin:0;line-height:1.55}
+.lf-esma{display:flex;gap:14px;align-items:center}
+.lf-esma .ar{font-size:30px;color:var(--cobalt);flex:none}
+.muted{color:var(--muted)}
+.remrow{display:flex;justify-content:space-between;align-items:center;gap:14px}
+.remrow > div{display:flex;flex-direction:column;min-width:0}
+.remrow small{color:var(--muted);font-size:12.5px}
+.remrow.inl{border-top:1px solid var(--line);padding-top:10px}
+.remlist{padding:4px 16px}
+.remitem{padding:12px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.remitem:first-child{border-top:0}
+.remctl select,.remctl input{width:100%;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit}
+.pill{display:inline-block;padding:5px 12px;border-radius:999px;font-size:13px;font-weight:600;background:var(--surface-2);color:var(--muted)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.no{background:var(--cobalt-soft);color:var(--coral)}
+.kazalist{padding:4px 16px}
+.kzrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.kzrow:first-child{border-top:0}
+.kzctl{display:flex;gap:6px;align-items:center}
+.kzctl .btn{padding:8px 12px}
+.kzin{width:72px;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit;text-align:center;font-variant-numeric:tabular-nums}
 .sayac-wrap{display:flex;flex-direction:column;gap:16px}
 .hgun{display:flex;flex-direction:column;gap:10px}
 .hgun-h{display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -452,10 +501,8 @@ nav.tabs button[aria-current="page"]{color:var(--cobalt)}
       <div class="brand"><h1>Zikirmatik</h1><span>ذِكْر</span></div>
       <div class="hbtns">
         <button class="iconbtn" id="openKible" aria-label="Kıble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 5.5l2.6 6.5L12 18.5 9.4 12z"/></svg></button>
-        <button class="iconbtn" id="openEsma" aria-label="Esmâü'l-Hüsnâ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.5l2.2 3.1 3.7-.9.4 3.8 3.4 1.7-1.9 3.3 1.9 3.3-3.4 1.7-.4 3.8-3.7-.9L12 21.5l-2.2-3.1-3.7.9-.4-3.8-3.4-1.7 1.9-3.3-1.9-3.3 3.4-1.7.4-3.8 3.7.9z"/><text x="12" y="15.2" text-anchor="middle" font-size="8.2" font-weight="700" fill="currentColor" stroke="none" font-family="system-ui,sans-serif">99</text></svg></button>
-        <button class="iconbtn" id="openTheme" aria-label="Tema"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 0-18c4.97 0 9 3.58 9 8 0 2.76-2.24 4-4.5 4H15a2 2 0 0 0-1.4 3.4c.4.4.6.9.6 1.4 0 .7-.6 1.2-1.2 1.2z"/><circle cx="7.5" cy="10.5" r="1.2"/><circle cx="12" cy="7.5" r="1.2"/><circle cx="16.5" cy="10.5" r="1.2"/></svg></button>
-        <button class="iconbtn" id="openStats" aria-label="İstatistik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M5 20V12M10 20V6M15 20v-9M20 20V9"/></svg></button>
-        <button class="iconbtn" id="openSettings" aria-label="Ayarlar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+        <button class="iconbtn esmabtn" id="openEsma" aria-label="Esmâü'l-Hüsnâ"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="1.2"/><rect x="5" y="5" width="14" height="14" rx="1.2" transform="rotate(45 12 12)"/></g><text x="12" y="15.3" text-anchor="middle" font-size="9" font-weight="800" fill="currentColor" font-family="Bricolage Grotesque,system-ui,sans-serif" letter-spacing="-.3">99</text></svg></button>
+        <button class="iconbtn" id="openMenu" aria-label="Menü" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
       </div>
     </div>
     <div class="greet" id="bandGreet" hidden></div>
@@ -778,10 +825,11 @@ const I = {
   chev:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'
 };
 const TABS = [["sayac","Sayaç"],["vakitler","Namaz Vakitleri"],["dualar","Dualar ve Sureler"],["hadisler","Hadis-i Şerifler"],["rehber","İlmihal"],["tesbihler","Tesbihler"]];
-const VIEWS = ["sayac","vakitler","dualar","hadisler","rehber","kible","esma","tesbihler","zikirler","istatistik"];
+const VIEWS = ["sayac","vakitler","dualar","hadisler","rehber","kible","esma","tesbihler","zikirler","istatistik","takvim","mubarek","nafile","hatirlatici","kaza"];
 let tab = (location.hash||"").replace("#","");
 if(!VIEWS.includes(tab)) tab = "sayac";
-function markHead(){ [["openKible","kible"],["openEsma","esma"],["openStats","istatistik"]].forEach(([id,t])=>{ const b=document.getElementById(id); if(b) b.setAttribute("aria-current", tab===t?"page":"false"); }); }
+const MENU_TABS=["istatistik","takvim","mubarek","nafile","hatirlatici","kaza"];
+function markHead(){ [["openKible",["kible"]],["openEsma",["esma"]],["openMenu",MENU_TABS]].forEach(([id,t])=>{ const b=document.getElementById(id); if(b) b.setAttribute("aria-current", t.includes(tab)?"page":"false"); }); }
 function renderTabs(){ markHead();
   const active = tab==="zikirler" ? "sayac" : tab;
   document.getElementById("tabs").innerHTML = TABS.map(([k,l])=>'<button data-tab="'+k+'"'+(k===active?' aria-current="page"':'')+'>'+I[k]+'<span>'+l+'</span></button>').join("");
@@ -848,7 +896,7 @@ function hicri(date,tz){
   try{ const p=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{timeZone:tz,day:"numeric",month:"numeric",year:"numeric"}).formatToParts(date); const g=t=>parseInt(p.find(x=>x.type===t).value,10);
     const y=g("year"), m=g("month"), d=g("day"); if(!(m>=1&&m<=12)) return ""; return d+" "+HICRI_AY[m-1]+" "+y; }catch(e){ return ""; }
 }
-const APP_VER="v.07";
+const APP_VER="v.09";
 const RENKLER=[["mavi","İznik mavisi","#1E52AE","#0F3478"],["yesil","Ravza yeşili","#147A5C","#0A4936"],["turkuaz","Çini turkuazı","#0C8590","#064D55"],["bordo","Osmanlı bordosu","#8C2236","#56111F"],["gece","Gece ve altın","#1C2B50","#E2BC5E"],["mor","Lavanta","#5A45A6","#34266B"],["safir","Safir","#2C3794","#161D5C"],["zeytin","Zeytin dalı","#5E6E2A","#384216"],["kahve","Türk kahvesi","#6B4027","#3F2414"],["gul","Gül kurusu","#A85A72","#6E3044"],["safak","Şafak","#C0601F","#7C3210"],["antrasit","Antrasit","#363B43","#1C1F24"]];
 function applyTheme(){
   const r=document.documentElement;
@@ -1187,6 +1235,265 @@ function viewEsma(){
     '<p class="note">İsimlerin sırası ve Arapçası Tirmizî\'deki rivayete (Daavât, 82) göredir. Türkçe anlamlar özet olarak verilmiştir.</p></section>';
 }
 document.getElementById("main").addEventListener("input",e=>{ if(e.target.id==="esmaQ"){ esmaQ=e.target.value; const r=document.getElementById("esmaRes"); if(r) r.innerHTML=esmaCards(); } });
+
+/* ================= TAKVİM YARDIMCILARI ================= */
+const AYLAR=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+const GUN_ADLARI=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+const RUMI_AY=["Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Teşrînievvel","Teşrînisânî","Kânûnuevvel","Kânûnusânî","Şubat"];
+const dayNo = (y,m,d) => Math.floor(Date.UTC(y,m-1,d)/864e5);
+function hijriParts(y,m,d){
+  try{ const p=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{timeZone:"UTC",day:"numeric",month:"numeric",year:"numeric"}).formatToParts(new Date(Date.UTC(y,m-1,d,12)));
+    const g=t=>parseInt(p.find(x=>x.type===t).value,10); return {d:g("day"),m:g("month"),y:g("year")}; }catch(e){ return null; }
+}
+function hicriStr(y,m,d){ const h=hijriParts(y,m,d); return h&&h.m>=1&&h.m<=12 ? h.d+" "+HICRI_AY[h.m-1]+" "+h.y : ""; }
+function rumiStr(y,m,d){
+  const j=new Date(Date.UTC(y,m-1,d-13)), jy=j.getUTCFullYear(), jm=j.getUTCMonth()+1, jd=j.getUTCDate();
+  return jd+" "+RUMI_AY[(jm-3+12)%12]+" "+(jm>=3?jy-584:jy-585);
+}
+function kasimHizir(y,m,d){
+  const n=dayNo(y,m,d), hz=dayNo(y,5,6), ks=dayNo(y,11,8);
+  if(n>=hz && n<ks) return "Hızır'ın "+(n-hz+1)+". günü";
+  const ksStart = n>=ks ? ks : dayNo(y-1,11,8);
+  return "Kasım'ın "+(n-ksStart+1)+". günü";
+}
+const byDay = (arr,y,m,d,salt=0) => arr[(dayNo(y,m,d)+salt)%arr.length];
+function hadisFor(y,m,d){ return byDay(HADISLER,y,m,d); }
+function gunlerYakin(y,m,d){
+  const n=dayNo(y,m,d);
+  return GUNLER.map(g=>{ const [a,b,c]=g[0].split("-").map(Number); return {g,diff:dayNo(a,b,c)-n,a,b,c}; }).filter(x=>x.diff>=0);
+}
+function localToday(){ const t=new Date(); return [t.getFullYear(),t.getMonth()+1,t.getDate()]; }
+
+/* ================= GÜNLÜK TAKVİM ================= */
+let takvimOff=0, takvimYuz="on";
+const GUN_DUALARI = DUALAR.filter(d=>(d.g==="namaz"||d.g==="sonra") && d.ar && d.ml && d.ml.length<260 && !/^(subhaneke|euzu|fatiha|ruku|kavme|secde|tesbihat)$/.test(d.id));
+function gunTavsiye(y,m,d){
+  const wd=new Date(Date.UTC(y,m-1,d)).getUTCDay(), h=hijriParts(y,m,d), out=[];
+  if(wd===5) out.push("Cuma günü: Kehf Sûresi okumak, çokça salavat getirmek ve dua etmek sünnettir.");
+  if(wd===1||wd===4) out.push("Bugün "+GUN_ADLARI[wd]+": Peygamberimizin tuttuğu nafile oruç günlerindendir.");
+  if(h && h.d>=13 && h.d<=15) out.push("Eyyâm-ı biyz: Hicri ayın 13, 14 ve 15. günlerinde oruç tutmak sünnettir.");
+  if(h && h.m===1 && (h.d===9||h.d===10||h.d===11)) out.push("Aşure günleri: Muharrem'in 9-10 ya da 10-11. günlerinde oruç tutulur.");
+  if(h && (h.m===7||h.m===8)) out.push("Üç aylar: Bu aylarda oruç, tövbe ve istiğfar çoğaltılır.");
+  if(!out.length) out.push("Günün güzel ameli: Beş vakit namazı vaktinde kılmak, sabah ve akşam virdini okumak.");
+  return out;
+}
+function viewTakvim(){
+  const [ty,tm,td]=localToday(); const [y,m,d]=addDays(ty,tm,td,takvimOff);
+  const wd=new Date(Date.UTC(y,m-1,d)).getUTCDay(), p=place(), t=dayTimes(p,y,m,d);
+  const mub=GUNLER.find(g=>g[0]===y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0"));
+  const yak=gunlerYakin(y,m,d)[0];
+  const nav='<div class="tknav"><button class="btn" data-tk="-1" aria-label="Önceki gün">‹ Önceki</button><button class="btn'+(takvimOff?'':' primary')+'" data-tk="0">Bugün</button><button class="btn" data-tk="1" aria-label="Sonraki gün">Sonraki ›</button></div>';
+  const yuz='<div class="seg" role="group" aria-label="Yaprak"><button data-yuz="on" aria-pressed="'+(takvimYuz==="on")+'">Ön yaprak</button><button data-yuz="arka" aria-pressed="'+(takvimYuz==="arka")+'">Arka yaprak</button></div>';
+  let leaf;
+  if(takvimYuz==="on"){
+    leaf='<article class="leaf'+(wd===5?' cuma':'')+'">'+
+      '<div class="lf-top"><span>'+AYLAR[m-1]+' '+y+'</span><span>'+GUN_ADLARI[wd]+'</span></div>'+
+      '<div class="lf-day">'+d+'</div>'+
+      (mub?'<div class="lf-mub">'+esc(mub[1])+'</div>':'')+
+      '<div class="lf-cal"><div><small>Hicrî</small><b>'+esc(hicriStr(y,m,d))+'</b></div><div><small>Rûmî</small><b>'+esc(rumiStr(y,m,d))+'</b></div></div>'+
+      '<div class="lf-kh">'+esc(kasimHizir(y,m,d))+' · '+esc(p.name)+'</div>'+
+      '<div class="lf-vk">'+MET().keys.map(k=>'<div><small>'+VAKIT_AD[k]+'</small><b>'+hm(t[k],p.tz)+'</b></div>').join("")+'</div>'+
+    '</article>';
+  } else {
+    const h=hadisFor(y,m,d), e=byDay(ESMA,y,m,d,7), du=byDay(GUN_DUALARI,y,m,d,3);
+    leaf='<article class="leaf arka">'+
+      '<div class="lf-top"><span>'+d+' '+AYLAR[m-1]+' '+y+' · '+GUN_ADLARI[wd]+'</span><span>Arka yaprak</span></div>'+
+      '<section><h3>Günün Hadis-i Şerifi</h3><div class="ar" lang="ar">'+esc(h.ar)+'</div><p class="ok">'+esc(h.ok)+'</p><p>'+esc(h.ml)+' <small class="muted">('+esc(h.src)+')</small></p></section>'+
+      '<section><h3>Günün Esmâsı</h3><div class="lf-esma"><span class="ar" lang="ar">'+esc(e.ar)+'</span><span><b>'+esc(e.tr)+'</b><br>'+esc(e.ml)+'</span></div></section>'+
+      '<section><h3>Günün Duası · '+esc(du.t)+'</h3><div class="ar" lang="ar">'+esc(du.ar)+'</div><p class="ok">'+esc(du.ok)+'</p><p>'+esc(du.ml)+'</p></section>'+
+      '<section><h3>Bugün için</h3><ul class="ol">'+gunTavsiye(y,m,d).map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></section>'+
+      (yak?'<section><h3>Yaklaşan mübarek gün</h3><p><b>'+esc(yak.g[1])+'</b> · '+yak.c+' '+AYLAR[yak.b-1]+(yak.diff?' · '+yak.diff+' gün sonra':' · bugün')+'</p></section>':'')+
+    '</article>';
+  }
+  return '<section class="view">'+nav+yuz+leaf+'<p class="note">Takvim yaprağı her gün kendiliğinden yenilenir. Rûmî tarih ve Kasım–Hızır günleri geleneksel takvim hesabına göredir.</p></section>';
+}
+
+/* ================= MÜBAREK GÜNLER ================= */
+const MUB_ACIKLAMA=[
+  ["Üç ayların","Recep, Şaban ve Ramazan aylarına üç aylar denir. Bu aylar oruç, namaz, tövbe ve hayırla değerlendirilir. Recep ayının ilk cuma gecesi Regaip Kandili'dir; dua, kaza ve nafile namaz, Kur'an ve tövbe ile ihya edilir."],
+  ["Miraç","Peygamberimizin Mescid-i Haram'dan Mescid-i Aksâ'ya, oradan göklere yükseltildiği gecedir. Beş vakit namaz bu gece farz kılınmıştır. İsrâ Sûresi'nin baş tarafı ve Necm Sûresi bu olayı anlatır."],
+  ["Berat","Şaban ayının 15. gecesidir. Bağışlanma ve kurtuluş gecesi olarak bilinir. Tövbe, istiğfar, kaza namazı ve dua ile geçirilir; ertesi gün oruç tutmak güzeldir."],
+  ["İlk teravih","Ramazan'ın ilk gecesi yatsıdan sonra teravih namazı başlar. Sahura kalkmak ve sahur yemek sünnettir."],
+  ["Ramazan başlangıcı","Kur'an'ın indirildiği, orucun farz kılındığı aydır. Oruç, teravih, mukabele, zekât ve fitre bu ayın ibadetleridir."],
+  ["Kadir","Kur'an'ın indirilmeye başlandığı, bin aydan daha hayırlı gecedir (Kadr Sûresi). Namaz, Kur'an, tövbe ve “Allâhümme inneke afüvvün tühibbü'l-afve fa'fü annî” duası ile ihya edilir."],
+  ["Ramazan Bayramı arefe","Fitrenin bayram namazından önce verilmesi gerekir. Arefe günü ziyaretler yapılır, bayrama hazırlanılır."],
+  ["Ramazan Bayramı","Üç gün sürer. Bayram namazı kılınır, akraba ve büyükler ziyaret edilir, küsler barıştırılır."],
+  ["Kurban Bayramı arefe","Zilhicce'nin 9. günüdür. Hacı olmayanların Arefe orucu tutması çok faziletlidir (Müslim). Teşrik tekbirleri Arefe sabahından bayramın 4. günü ikindisine kadar her farzdan sonra getirilir."],
+  ["Kurban Bayramı","Dört gün sürer. Bayram namazından sonra kurban kesilir, eti paylaşılır, akraba ziyaret edilir."],
+  ["Hicri yılbaşı","Muharrem ayının ilk günüdür. Peygamberimizin Mekke'den Medine'ye hicretiyle başlayan takvimin yeni yılıdır."],
+  ["Aşure","Muharrem'in 10. günüdür. Bu gün oruç tutmak sünnettir; tek gün tutmamak için 9-10 ya da 10-11. günler birlikte tutulur. Aşure pişirilip komşulara dağıtılması güzel bir gelenektir."],
+  ["Mevlid","Peygamberimizin dünyaya teşrif ettiği gecedir. Salavat, siyer okumak ve O'nun sünnetini hatırlamak ile değerlendirilir."]
+];
+function mubAciklama(t){ const x=MUB_ACIKLAMA.find(a=>t.startsWith(a[0])||t.includes(a[0])); return x?x[1]:""; }
+function viewMubarek(){
+  const [y,m,d]=localToday(); const list=gunlerYakin(y,m,d), nx=list[0];
+  const on=remOn("mubarek");
+  return '<section class="view">'+
+    (nx?'<div class="hero"><span class="lbl">Sıradaki mübarek gün</span><span class="big" style="font-size:clamp(26px,8vw,36px)">'+esc(nx.g[1])+'</span><span class="lbl">'+nx.c+' '+AYLAR[nx.b-1]+' '+nx.a+' · '+(nx.diff===0?'bugün':nx.diff===1?'yarın':nx.diff+' gün kaldı')+'</span></div>':'')+
+    '<div class="card remrow"><div><b>Mübarek günleri hatırlat</b><small>Bir gün önce akşam saat '+esc(remCfg("mubarek").time)+'’de hatırlatır</small></div><input type="checkbox" class="switch" data-rem="mubarek"'+(on?' checked':'')+' aria-label="Mübarek günleri hatırlat"></div>'+
+    '<div class="list">'+list.map(x=>'<details class="card dua"><summary><span>'+esc(x.g[1])+'<small>'+x.c+' '+AYLAR[x.b-1]+' '+x.a+' · '+(x.g[2]?esc(x.g[2]):GUN_ADLARI[new Date(Date.UTC(x.a,x.b-1,x.c)).getUTCDay()])+'</small></span><span class="gun'+(x.diff<=7?' soon':'')+'" style="border:0;padding:0"><span class="left">'+(x.diff===0?'Bugün':x.diff===1?'Yarın':x.diff+' gün')+'</span></span></summary><div class="body"><p>'+esc(mubAciklama(x.g[1]))+'</p></div></details>').join("")+'</div>'+
+    '<p class="note">Tarihler Diyanet takvimine göredir. Kandiller, belirtilen günün akşamından itibaren idrak edilir. “Yaklaşık” yazanlar hicri takvimden hesaplanmıştır.</p></section>';
+}
+
+/* ================= NAFİLE İBADETLER ================= */
+const NAFILE=[
+  {id:"israk", rem:"israk", t:"İşrak namazı", rk:"2 ya da 4 rekât", w:(t,p)=>hm(new Date(+t.gunes+45*6e4),p.tz)+" sonrası", b:"Güneş doğup kerahet vakti çıktıktan sonra, yaklaşık 45 dakika sonra kılınır. Sabah namazından sonra yerinden kalkmadan zikirle meşgul olup işrakı kılmanın büyük sevabı bildirilmiştir (Tirmizî)."},
+  {id:"duha", rem:"duha", t:"Duhâ (kuşluk) namazı", rk:"2 ile 12 rekât arası, genelde 4 ya da 8", w:(t,p)=>hm(new Date(+t.gunes+45*6e4),p.tz)+" – "+hm(new Date(+t.ogle-45*6e4),p.tz), b:"Kuşluk vaktinde kılınır. En faziletli vakti günün dörtte biri geçtikten sonradır. Peygamberimiz Duhâ namazını tavsiye etmiş, bedendeki her eklem için bir sadaka gerektiğini ve iki rekât duhânın bunlara yeteceğini bildirmiştir (Müslim)."},
+  {id:"evvabin", rem:"evvabin", t:"Evvâbîn namazı", rk:"6 rekât (ikişer ikişer)", w:(t,p)=>hm(t.aksam,p.tz)+" – "+hm(t.yatsi,p.tz), b:"Akşam namazının farzı ve sünnetinden sonra kılınır. “Evvâbîn”, Allah'a çokça yönelenler demektir. Akşamın iki rekât sünneti de bu altı rekâta dahil edilebilir."},
+  {id:"teheccud", rem:"teheccud", t:"Teheccüd namazı", rk:"2 ile 12 rekât arası (ikişer)", w:(t,p,n)=>hm(n.son,p.tz)+" – "+hm(n.imsak,p.tz)+" (gecenin son üçte biri)", b:"Yatsıdan sonra bir miktar uyuyup kalkarak kılınır. En faziletlisi gecenin son üçte biridir. Kur'an, teheccüdü Peygamberimize “sana mahsus fazladan bir ibadet” olarak emreder (İsrâ 79)."},
+  {id:"tesbih", rem:"tesbihn", t:"Tesbih namazı", rk:"4 rekât · toplam 300 tesbih", w:()=>"Kerahet vakitleri dışında her zaman", b:"Her rekâtta 75, dört rekâtta 300 defa “Sübhânallâhi ve'l-hamdü lillâhi ve lâ ilâhe illallâhü vallâhü ekber” okunur. Dağılımı: Sübhâneke'den sonra 15, kıraatten sonra 10, rükûda 10, rükûdan kalkınca 10, birinci secdede 10, iki secde arasında 10, ikinci secdede 10. Mümkünse her gün, olmazsa haftada, ayda, yılda ya da ömürde bir kez kılınması tavsiye edilmiştir (Ebû Dâvûd)."},
+  {id:"tahiyye", t:"Tahiyyetü'l-mescid", rk:"2 rekât", w:()=>"Camiye girince, oturmadan önce", b:"Camiye girildiğinde mescidi selamlamak için kılınır. Girildiği vakit farz ya da sünnet kılınırsa onun yerine de geçer."},
+  {id:"vudu", t:"Abdest şükrü (Şükrü'l-vudû)", rk:"2 rekât", w:()=>"Abdest aldıktan sonra", b:"Abdest aldıktan sonra, uzuvlar kurumadan kılınması müstehaptır."},
+  {id:"hacet", t:"Hâcet namazı", rk:"2 ya da 4 rekât", w:()=>"Bir dilek ya da ihtiyaç için", b:"Allah'tan ya da insanlardan bir ihtiyacı olan kişi abdest alıp namaz kılar, Allah'a hamd ve Peygamberimize salavattan sonra ihtiyacını dua ile ister (Tirmizî)."},
+  {id:"istihare", t:"İstihâre namazı", rk:"2 rekât", w:()=>"Karar vermeden önce, tercihen yatmadan", b:"Önemli bir işte hayırlı olanı istemek için kılınır. Ardından Peygamberimizin öğrettiği istihâre duası okunur (Buhârî). Sonuç rüya beklemekten çok, gönlün bir tarafa yatması ve işlerin kolaylaşmasıyla anlaşılır."},
+  {id:"tovbe", t:"Tövbe namazı", rk:"2 rekât", w:()=>"Bir günah işlendiğinde", b:"Günah işleyen kişi güzelce abdest alıp iki rekât namaz kılar ve Allah'tan bağışlanma dilerse Allah onu bağışlar (Ebû Dâvûd, Tirmizî)."},
+  {id:"sukur", t:"Şükür namazı", rk:"2 rekât (ya da şükür secdesi)", w:()=>"Sevindirici bir haber ya da nimet karşısında", b:"Bir nimete kavuşunca ya da bir sıkıntıdan kurtulunca Allah'a şükür için kılınır."}
+];
+const NAFILE_ORUC=[
+  ["Pazartesi ve Perşembe","Peygamberimiz bu günlerde oruç tutar, amellerin bu günlerde Allah'a arz edildiğini bildirirdi (Tirmizî).","pzt"],
+  ["Eyyâm-ı biyz","Her hicri ayın 13, 14 ve 15. günleri. Peygamberimiz bu üç günü tutmayı tavsiye etmiştir (Nesâî).","eyyam"],
+  ["Şevval'de altı gün","Ramazan'dan sonra Şevval ayında altı gün oruç tutan, bütün yılı oruçlu geçirmiş gibi olur (Müslim).",""],
+  ["Aşure","Muharrem'in 9-10 ya da 10-11. günleri.",""],
+  ["Arefe","Zilhicce'nin 9. günü, hacı olmayanlar için. Geçmiş ve gelecek birer yılın günahlarına kefaret olduğu bildirilmiştir (Müslim).",""],
+  ["Üç aylar ve haram aylar","Recep, Şaban, Muharrem, Zilkade ve Zilhicce aylarında nafile oruç tutmak faziletlidir.",""]
+];
+function geceHesap(p){
+  const [y,m,d]=ymdIn(p.tz,new Date()), t=dayTimes(p,y,m,d), [a,b,c]=addDays(y,m,d,1), tn=dayTimes(p,a,b,c);
+  const imsak=tn.imsak, son=new Date(+imsak-(imsak-t.aksam)/3); return {son, imsak};
+}
+function viewNafile(){
+  const p=place(), [y,m,d]=ymdIn(p.tz,new Date()), t=dayTimes(p,y,m,d), n=geceHesap(p);
+  return '<section class="view"><p class="note" style="margin:0">Farz ve vacip dışında, sevap kazanmak için kılınan namazlar. Vakitler bugün için '+esc(p.name)+' konumuna göre hesaplanmıştır.</p>'+
+    '<div class="list">'+NAFILE.map(x=>'<details class="card dua"><summary><span>'+esc(x.t)+'<small>'+esc(x.rk)+' · '+esc(x.w(t,p,n))+'</small></span><span class="chev">'+I.chev+'</span></summary><div class="body"><p>'+esc(x.b)+'</p>'+
+      (x.rem?'<div class="remrow inl"><div><b>Hatırlat</b><small>'+esc(remDesc(x.rem))+'</small></div><input type="checkbox" class="switch" data-rem="'+x.rem+'"'+(remOn(x.rem)?' checked':'')+' aria-label="'+esc(x.t)+' hatırlat"></div>':'')+
+      '</div></details>').join("")+'</div>'+
+    '<div class="tsec"><h2>Nafile oruçlar <small>Sünnet ve müstehap oruçlar</small></h2><div class="list">'+NAFILE_ORUC.map(([a,b,r])=>'<div class="card" style="display:grid;gap:8px"><b>'+esc(a)+'</b><p style="margin:0">'+esc(b)+'</p>'+
+      (r?'<div class="remrow inl"><div><b>Bir gün önceden hatırlat</b><small>'+esc(remDesc(r))+'</small></div><input type="checkbox" class="switch" data-rem="'+r+'"'+(remOn(r)?' checked':'')+' aria-label="'+esc(a)+' hatırlat"></div>':'')+'</div>').join("")+'</div></div>'+
+    '<p class="note">Bayram günlerinde (Ramazan Bayramı'+"'"+'nın 1. günü ve Kurban Bayramı'+"'"+'nın 4 günü) oruç tutmak haramdır.</p></section>';
+}
+
+/* ================= HATIRLATICILAR ================= */
+const REM_GRUP=[["namaz","Namaz vakitleri"],["okuma","Günlük okumalar"],["nafile","Nafile ibadetler"],["oruc","Oruç ve mübarek günler"]];
+const REM_DEFS=[
+  {id:"v_imsak", g:"namaz", t:"İmsak (sahur sonu)", type:"vakit", k:"imsak", off:-30},
+  {id:"v_sabah", g:"namaz", t:"Sabah namazı", type:"vakit", k:"sabah", off:0},
+  {id:"v_gunes", g:"namaz", t:"Güneş doğuşu (sabahın son vakti)", type:"vakit", k:"gunes", off:-20},
+  {id:"v_ogle", g:"namaz", t:"Öğle namazı", type:"vakit", k:"ogle", off:0},
+  {id:"v_ikindi", g:"namaz", t:"İkindi namazı", type:"vakit", k:"ikindi", off:0},
+  {id:"v_aksam", g:"namaz", t:"Akşam namazı (iftar)", type:"vakit", k:"aksam", off:0},
+  {id:"v_yatsi", g:"namaz", t:"Yatsı namazı", type:"vakit", k:"yatsi", off:0},
+  {id:"cuma", g:"namaz", t:"Cuma namazı", type:"vakit", k:"ogle", off:-60, gun:5},
+  {id:"hadis", g:"okuma", t:"Günün hadisini oku", type:"saat", time:"09:00", go:"hadisler"},
+  {id:"kuran", g:"okuma", t:"Kur'an-ı Kerim okuma", type:"saat", time:"21:00", go:"dualar"},
+  {id:"virdS", g:"okuma", t:"Sabah virdi", type:"vakit", k:"gunes", off:20, go:"sayac"},
+  {id:"virdA", g:"okuma", t:"Akşam virdi", type:"vakit", k:"aksam", off:20, go:"sayac"},
+  {id:"esma", g:"okuma", t:"Günün esmâsını oku", type:"saat", time:"12:00", go:"takvim"},
+  {id:"cumaKehf", g:"okuma", t:"Cuma: Kehf Sûresi ve salavat", type:"saat", time:"10:00", gun:5},
+  {id:"israk", g:"nafile", t:"İşrak namazı", type:"vakit", k:"gunes", off:45, go:"nafile"},
+  {id:"duha", g:"nafile", t:"Duhâ (kuşluk) namazı", type:"vakit", k:"ogle", off:-90, go:"nafile"},
+  {id:"evvabin", g:"nafile", t:"Evvâbîn namazı", type:"vakit", k:"aksam", off:20, go:"nafile"},
+  {id:"teheccud", g:"nafile", t:"Teheccüd namazı", type:"gece", off:0, go:"nafile"},
+  {id:"tesbihn", g:"nafile", t:"Tesbih namazı (haftalık)", type:"saat", time:"21:30", gun:4, go:"nafile"},
+  {id:"pzt", g:"oruc", t:"Pazartesi–Perşembe orucu", type:"once", time:"21:00", cond:(y,m,d)=>{ const w=new Date(Date.UTC(y,m-1,d)).getUTCDay(); return w===1||w===4; }, msg:"Yarın nafile oruç günü. Sahura kalkmayı unutmayın."},
+  {id:"eyyam", g:"oruc", t:"Eyyâm-ı biyz orucu", type:"once", time:"21:00", cond:(y,m,d)=>{ const h=hijriParts(y,m,d); return h && h.d>=13 && h.d<=15; }, msg:"Yarın Eyyâm-ı biyz orucu."},
+  {id:"mubarek", g:"oruc", t:"Kandil ve mübarek günler", type:"once", time:"20:00", cond:(y,m,d)=>!!GUNLER.find(g=>g[0]===y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0")), go:"mubarek"}
+];
+const OFFS=[-90,-60,-45,-30,-20,-15,-10,-5,0,5,10,15,20,30,45,60,90];
+const remDef = id => REM_DEFS.find(r=>r.id===id);
+function remCfg(id){ S.rem ||= {}; const d=remDef(id); const c=S.rem[id]||{}; return {on:!!c.on, off: c.off!=null?c.off:d.off, time: c.time||d.time}; }
+const remOn = id => remCfg(id).on;
+function offTxt(o){ return o===0?"vakit girince":o<0?(-o)+" dk önce":o+" dk sonra"; }
+function remDesc(id){
+  const d=remDef(id), c=remCfg(id), gun=d.gun!=null?GUN_ADLARI[d.gun]+" günleri · ":"";
+  if(d.type==="vakit") return gun+VAKIT_AD[d.k]+" · "+offTxt(c.off);
+  if(d.type==="gece") return "Gecenin son üçte biri başlayınca";
+  if(d.type==="once") return "Bir gün önce saat "+c.time;
+  return gun+"Her gün saat "+c.time;
+}
+function remTimes(d,c,p){
+  // bugün ve dün için olası zamanlar (gece yarısını geçenler için)
+  const out=[], now=new Date(), [y,m,dd]=ymdIn(p.tz,now);
+  for(const k of [-1,0]){
+    const [a,b,e]=addDays(y,m,dd,k), wd=new Date(Date.UTC(a,b-1,e)).getUTCDay(), key=d.id+"@"+a+"-"+b+"-"+e;
+    if(d.gun!=null && wd!==d.gun) continue;
+    if(d.type==="vakit"){ const t=dayTimes(p,a,b,e)[d.k]; if(t) out.push({t:new Date(+t+c.off*6e4), key}); }
+    else if(d.type==="gece"){ const t=dayTimes(p,a,b,e), [a2,b2,e2]=addDays(a,b,e,1), imsak=dayTimes(p,a2,b2,e2).imsak; out.push({t:new Date(+imsak-(imsak-t.aksam)/3), key}); }
+    else { const [hh,mm]=c.time.split(":").map(Number); const t=new Date(a,b-1,e,hh,mm);
+      if(d.type==="once"){ const [a2,b2,e2]=addDays(a,b,e,1); if(!d.cond(a2,b2,e2)) continue; }
+      out.push({t, key}); }
+  }
+  return out;
+}
+function remText(d,c,p){
+  if(d.type==="vakit"){ const v=VAKIT_AD[d.k]; if(d.id==="cuma") return ["Cuma namazına "+(-c.off)+" dk kaldı","Hazırlanma vakti · "+p.name];
+    if(d.g==="namaz") return [c.off<0?v+" vaktine "+(-c.off)+" dk kaldı":c.off===0?v+" vakti girdi":v+" vakti "+c.off+" dk önce girdi", d.t+" · "+p.name];
+    return [d.t+" vakti", remDesc(d.id)]; }
+  if(d.id==="hadis"){ const [y,m,dd]=localToday(), h=hadisFor(y,m,dd); return ["Günün hadisi", h.ml]; }
+  if(d.id==="esma"){ const [y,m,dd]=localToday(), e=byDay(ESMA,y,m,dd,7); return ["Günün esmâsı: "+e.tr, e.ml]; }
+  if(d.id==="mubarek"){ const [y,m,dd]=localToday(), [a,b,e]=addDays(y,m,dd,1), g=GUNLER.find(g=>g[0]===a+"-"+String(b).padStart(2,"0")+"-"+String(e).padStart(2,"0")); return ["Yarın: "+(g?g[1]:"mübarek gün"), "Hazırlanmayı unutmayın. Kandiller akşamdan idrak edilir."]; }
+  if(d.type==="once") return [d.t, d.msg||""];
+  return [d.t, "Hatırlatma"];
+}
+function bildir(title, body, goTab){
+  toast(title);
+  if(S.settings.sound) bell();
+  vibrate([300,120,300]);
+  try{
+    if("Notification" in window && Notification.permission==="granted"){
+      const opt={body, icon:"icon-192.png", badge:"icon-192.png", tag:"zm-"+title, data:{url:"./#"+(goTab||"sayac")}};
+      if(navigator.serviceWorker && navigator.serviceWorker.controller) navigator.serviceWorker.ready.then(r=>r.showNotification(title,opt)).catch(()=>{ new Notification(title,opt); });
+      else new Notification(title,opt);
+    }
+  }catch(e){}
+}
+function remTick(){
+  S.rem ||= {}; S.remFired ||= {};
+  const p=place(), now=Date.now(); let ch=false;
+  for(const d of REM_DEFS){
+    const c=remCfg(d.id); if(!c.on) continue;
+    for(const x of remTimes(d,c,p)){
+      const age=now-x.t; if(age<0 || age>10*6e4 || S.remFired[x.key]) continue;
+      S.remFired[x.key]=Date.now(); ch=true;
+      const [t,b]=remText(d,c,p); bildir(t,b,d.go);
+    }
+  }
+  for(const k in S.remFired) if(now-S.remFired[k]>3*864e5){ delete S.remFired[k]; ch=true; }
+  if(ch) save();
+}
+setInterval(remTick,20000);
+setTimeout(remTick,3000);
+function izinDurum(){ if(!("Notification" in window)) return "yok"; return Notification.permission; }
+function viewHatirlatici(){
+  const iz=izinDurum(), aktif=REM_DEFS.filter(d=>remOn(d.id)).length;
+  const izTxt = iz==="granted"?'<span class="pill ok">Bildirim izni açık</span>': iz==="denied"?'<span class="pill no">Bildirim izni kapalı</span>': iz==="yok"?'<span class="pill no">Bu ekranda bildirim yok</span>':'<span class="pill">Bildirim izni istenmedi</span>';
+  const row=d=>{ const c=remCfg(d.id);
+    let ctl="";
+    if(d.type==="vakit") ctl='<select class="remsel" data-remoff="'+d.id+'" aria-label="'+esc(d.t)+' zamanı">'+OFFS.filter(o=>d.g!=="namaz"||o<=30).map(o=>'<option value="'+o+'"'+(o===c.off?' selected':'')+'>'+VAKIT_AD[d.k]+' · '+offTxt(o)+'</option>').join("")+'</select>';
+    else if(d.type!=="gece") ctl='<input class="remtime" type="time" data-remtime="'+d.id+'" value="'+c.time+'" aria-label="'+esc(d.t)+' saati">';
+    return '<div class="remitem'+(c.on?' on':'')+'"><div class="remrow"><div><b>'+esc(d.t)+'</b><small>'+esc(remDesc(d.id))+'</small></div><input type="checkbox" class="switch" data-rem="'+d.id+'"'+(c.on?' checked':'')+' aria-label="'+esc(d.t)+'"></div>'+(ctl&&c.on?'<div class="remctl">'+ctl+'</div>':'')+'</div>';
+  };
+  return '<section class="view">'+
+    '<div class="card" style="display:grid;gap:10px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'+izTxt+'<span class="note">'+aktif+' hatırlatıcı açık</span></div>'+
+      '<div class="actions">'+(iz!=="granted"&&iz!=="yok"?'<button class="btn primary" id="izinIste">Bildirimlere izin ver</button>':'<span></span>')+'<button class="btn" id="remTest">Deneme hatırlatması</button></div>'+
+      '<p class="note">Hatırlatıcılar uygulama açıkken ya da arka plana yeni alınmışken çalışır. Telefon uzun süre kilitli kalırsa bazı hatırlatmalar gecikebilir. Sesli uyarı için Profilim’de “Hedef sesi” açık olmalı.</p></div>'+
+    REM_GRUP.map(([g,l])=>'<div class="tsec"><h2>'+l+'</h2><div class="card remlist">'+REM_DEFS.filter(d=>d.g===g).map(row).join("")+'</div></div>').join("")+
+  '</section>';
+}
+async function izinIste(){
+  try{ if(!("Notification" in window)) throw 0; const r=await Notification.requestPermission(); toast(r==="granted"?"Bildirim izni verildi":"Bildirim izni verilmedi. Telefon ayarlarından açabilirsiniz."); }
+  catch(e){ toast("Bu cihazda bildirim desteklenmiyor"); }
+  render();
+}
+
+/* ================= KAZA TAKİBİ ================= */
+const KAZA=[["sabah","Sabah"],["ogle","Öğle"],["ikindi","İkindi"],["aksam","Akşam"],["yatsi","Yatsı"],["vitir","Vitir"],["oruc","Oruç"]];
+function viewKaza(){
+  S.kaza ||= {};
+  const top=KAZA.reduce((a,[k])=>a+(S.kaza[k]||0),0);
+  return '<section class="view"><div class="hero"><span class="lbl">Kalan kaza borcu</span><span class="big">'+fmt(top)+'</span><span class="lbl">Kıldıkça “Kıldım” düğmesine basın, sayı azalsın</span></div>'+
+    '<div class="card kazalist">'+KAZA.map(([k,l])=>'<div class="kzrow"><b>'+l+'</b><div class="kzctl"><button class="btn" data-kz="'+k+'" data-kzd="1" aria-label="'+l+' borcunu artır">+1</button><input type="number" inputmode="numeric" min="0" class="kzin" data-kzset="'+k+'" value="'+(S.kaza[k]||0)+'" aria-label="'+l+' kaza sayısı"><button class="btn primary" data-kz="'+k+'" data-kzd="-1">'+(k==="oruc"?"Tuttum":"Kıldım")+'</button></div></div>').join("")+'</div>'+
+    '<div class="card"><h2 class="sec" style="margin-bottom:8px">Kaza namazına niyet</h2><p>“Niyet ettim Allah rızası için kılamadığım ilk sabah namazının farzını kaza etmeye.” Hangi namazın kazası ise onun adı söylenir. Sünnetler kaza edilmez; farzlar ve vitir kaza edilir.</p><p class="note" style="margin-top:8px">Yıllarca kılınamayan namazlar için borcunuzu tahmini olarak girip, her kıldığınızda azaltabilirsiniz. Sayılar yalnızca bu telefonda saklanır.</p></div></section>';
+}
 
 /* ================= NAMAZ REHBERİ ================= */
 const NAMAZLAR = [
@@ -1694,13 +2001,12 @@ function viewIstatistik(){
 /* ================= AYARLAR ================= */
 function openSettings(){
   const T=(k,t,s)=>'<div class="toggle"><label for="set_'+k+'">'+t+'<small>'+s+'</small></label><input type="checkbox" class="switch" id="set_'+k+'" data-set="'+k+'"'+(S.settings[k]?' checked':'')+'></div>';
-  document.getElementById("sheetHost").innerHTML='<div class="sheet" id="sheet"><div class="panel" role="dialog" aria-label="Ayarlar"><h2>Ayarlar</h2>'+
+  document.getElementById("sheetHost").innerHTML='<div class="sheet" id="sheet"><div class="panel" role="dialog" aria-label="Profilim"><h2>Profilim</h2>'+
     T("vib","Titreşim","Her dokunuşta kısa, hedefte uzun titreşir. iPhone tarayıcıları titreşimi desteklemez.")+
     T("sound","Hedef sesi","Hedef dolunca zil sesi çalar.")+
     T("every33","33'te uyarı","Büyük hedeflerde her 33'te bir hafif uyarı verir.")+
     T("tapSound","Tık sesi","Her dokunuşta hafif bir tık sesi.")+
     T("wake","Ekran açık kalsın","Zikir çekerken ekran kararmaz.")+
-    T("notify","Vakit bildirimi","Namaz vakti girince zil çalar ve bildirim gelir. Uygulama açıkken ya da arka planda yeni bırakılmışken çalışır.")+
     '<div class="sec-h">Adınız</div><div class="namefield"><input id="adInput" maxlength="30" placeholder="Örn. Ahmet" value="'+esc(S.ad||"")+'"><button class="btn primary" id="adKaydet" style="padding:10px 16px">Kaydet</button></div>'+
     '<p class="note">Üst bantta sizi adınızla selamlar. Ad yalnızca bu telefonda saklanır.</p>'+
     '<div class="sec-h">Başka telefona taşı</div><div class="yedek"><p class="note">Sayaçlarınızı, istatistiklerinizi ve ayarlarınızı başka telefona aktarmak için yedek kodunu kopyalayın, diğer telefonda buraya yapıştırıp “Yedeği yükle”ye basın.</p>'+
@@ -1715,7 +2021,35 @@ function openTheme(){
     '<p class="note" style="margin-top:6px">Seçtiğiniz renk hemen uygulanır. “Telefona göre” seçiliyken telefon gece moduna geçince uygulama da koyulaşır.</p>'+
     '<button class="btn" id="closeSettings" style="margin-top:12px">Tamam</button></div></div>';
 }
-document.getElementById("openTheme").addEventListener("click",openTheme);
+function openMenu(){
+  const it=(id,icon,t,sub,cur)=>'<button class="mitem" id="'+id+'"'+(cur?' aria-current="page"':'')+'><span class="mic">'+icon+'</span><span class="mtx"><b>'+t+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</span>'+I.chevR+'</button>';
+  const ic=d=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true">'+d+'</svg>';
+  const RN=(RENKLER.find(r=>r[0]===S.renk)||RENKLER[0])[1];
+  document.getElementById("sheetHost").innerHTML='<div class="sheet" id="sheet"><div class="panel" role="dialog" aria-label="Menü"><h2>Menü</h2><div class="mlist">'+
+    it("mHome",ic('<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>'),"Ana sayfa","Sayaç ekranına dön",tab==="sayac")+
+    it("mStats",ic('<path d="M5 20V12M10 20V6M15 20v-9M20 20V9"/>'),"İstatistik","Bugün, son 7 gün ve toplamlar",tab==="istatistik")+
+    it("mTheme",ic('<path d="M12 21a9 9 0 1 1 0-18c4.97 0 9 3.58 9 8 0 2.76-2.24 4-4.5 4H15a2 2 0 0 0-1.4 3.4c.4.4.6.9.6 1.4 0 .7-.6 1.2-1.2 1.2z"/><circle cx="7.5" cy="10.5" r="1.2"/><circle cx="12" cy="7.5" r="1.2"/><circle cx="16.5" cy="10.5" r="1.2"/>'),"Tema",RN)+
+    '</div><div class="mlist mlast">'+
+    it("mTakvim",ic('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/><path d="M8 14h3v3H8z"/>'),"Günlük takvim","Takvim yaprağı ve arka yaprak",tab==="takvim")+
+    it("mKible",ic('<circle cx="12" cy="12" r="9"/><path d="M12 5.5l2.6 6.5L12 18.5 9.4 12z"/>'),"Kıble pusulası","Kâbe yönünü bulun",tab==="kible")+
+    it("mMubarek",ic('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/><path d="M17 3l.7 1.6L19.3 5l-1.6.7L17 7.3l-.7-1.6L14.7 5l1.6-.4z"/>'),"Mübarek günler","Üç aylar, kandiller, bayramlar",tab==="mubarek")+
+    it("mNafile",ic('<path d="M4 20h16M6 20l2.5-7h7L18 20M12 4.4a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2z"/>'),"Nafile ibadetler","Duhâ, evvâbîn, teheccüd, tesbih namazı",tab==="nafile")+
+    it("mHatir",ic('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/>'),"Hatırlatıcılar",REM_DEFS.filter(d=>remOn(d.id)).length+" hatırlatıcı açık",tab==="hatirlatici")+
+    it("mKaza",ic('<path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 4v4h4"/><path d="M12 8v4l3 2"/>'),"Kaza takibi","Kılınamayan namaz ve oruç sayacı",tab==="kaza")+
+    '</div><div class="mlist mlast">'+
+    it("mProfil",ic('<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'),"Profilim",(S.ad?S.ad+" · ":"")+"Ad, ses, titreşim, yedekleme")+
+    '</div><p class="appver">Zikirmatik · Sürüm '+APP_VER+'</p><button class="btn" id="closeSettings" style="margin-top:6px">Kapat</button></div></div>';
+}
+document.getElementById("openMenu").addEventListener("click",openMenu);
+document.getElementById("sheetHost").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  const close=()=>document.getElementById("sheetHost").innerHTML="";
+  if(b.id==="mHome"){ close(); go("sayac"); }
+  else if(b.id==="mStats"){ close(); go("istatistik"); }
+  else if(b.id==="mTheme"){ openTheme(); }
+  else if(b.id==="mProfil"){ openSettings(); }
+  else { const mp={mTakvim:"takvim",mKible:"kible",mMubarek:"mubarek",mNafile:"nafile",mHatir:"hatirlatici",mKaza:"kaza"}[b.id]; if(mp){ close(); if(mp==="takvim"){ takvimOff=0; takvimYuz="on"; } go(mp); } }
+});
 document.getElementById("openKible").addEventListener("click",()=>go("kible"));
 document.getElementById("openEsma").addEventListener("click",()=>go("esma"));
 function yedekKodu(){ const o=Object.assign({},S); delete o.lastNotified; return btoa(unescape(encodeURIComponent(JSON.stringify({v:1,s:o})))); }
@@ -1735,10 +2069,9 @@ document.getElementById("sheetHost").addEventListener("click",async e=>{
   if(b.id==="yedekVazgec"){ onay.innerHTML=""; return; }
   if(b.id==="yedekEvet"){ const d=onay._data; S=Object.assign(defaults(),d); S.settings=Object.assign(defaults().settings,d.settings||{}); save(); applyTheme(); document.documentElement.style.setProperty("--ar-scale",S.arScale||1); render(); updateBand(); document.getElementById("sheetHost").innerHTML=""; toast("Yedek yüklendi"); return; }
 });
-document.getElementById("openSettings").addEventListener("click",openSettings);
-document.getElementById("openStats").addEventListener("click",()=>go("istatistik"));
+
 document.getElementById("sheetHost").addEventListener("click",e=>{ if(e.target.id==="sheet"||e.target.id==="closeSettings") document.getElementById("sheetHost").innerHTML=""; });
-document.getElementById("sheetHost").addEventListener("change",e=>{ const k=e.target.dataset.set; if(!k) return; S.settings[k]=e.target.checked; save(); if(k==="wake") applyWake(); if(k==="vib"&&e.target.checked) vibrate(40); if(k==="sound"&&e.target.checked) bell(); if(k==="notify"&&e.target.checked) askNotify(e.target); });
+document.getElementById("sheetHost").addEventListener("change",e=>{ const k=e.target.dataset.set; if(!k) return; S.settings[k]=e.target.checked; save(); if(k==="wake") applyWake(); if(k==="vib"&&e.target.checked) vibrate(40); if(k==="sound"&&e.target.checked) bell(); });
 
 /* ================= ÇİZİM VE OLAYLAR ================= */
 const main=document.getElementById("main");
@@ -1752,7 +2085,7 @@ function fsBar(z){
 function render(){
   renderTabs();
   requestAnimationFrame(()=>{ const on=document.querySelector(".steps .on"); if(on){ const p=on.parentElement; p.scrollLeft=on.offsetLeft-p.clientWidth/2+on.offsetWidth/2; } });
-  const html = ({esma:viewEsma, sayac:viewSayac, vakitler:viewVakitler, dualar:viewDualar, hadisler:viewHadisler, rehber:viewRehber, kible:viewKible, tesbihler:viewTesbihler, zikirler:viewZikirler, istatistik:viewIstatistik}[tab])();
+  const html = ({takvim:viewTakvim, mubarek:viewMubarek, nafile:viewNafile, hatirlatici:viewHatirlatici, kaza:viewKaza, esma:viewEsma, sayac:viewSayac, vakitler:viewVakitler, dualar:viewDualar, hadisler:viewHadisler, rehber:viewRehber, kible:viewKible, tesbihler:viewTesbihler, zikirler:viewZikirler, istatistik:viewIstatistik}[tab])();
   if(tab==="sayac") main.innerHTML = html;
   else { const z=S.fs||1; main.innerHTML = fsBar(z)+'<div class="zoomwrap" style="zoom:'+z+'">'+html+'</div>'; }
 }
@@ -1782,6 +2115,11 @@ main.addEventListener("click",e=>{
   if(b.dataset.hfav){ hFav=!hFav; hKonu=""; refreshHadis(); return; }
   if(b.id==="hClear"){ hQuery=""; hKonu=""; hFav=false; const q=document.getElementById("hQ"); if(q) q.value=""; refreshHadis(); return; }
   if(b.dataset.fs){ const z=+(Math.min(FS_MAX,Math.max(FS_MIN,(S.fs||1)+(+b.dataset.fs)*0.1))).toFixed(2); if(z===(S.fs||1)){ toast(z>=FS_MAX?"En büyük boyuttasınız":"En küçük boyuttasınız"); return; } const y=window.scrollY, r=y/Math.max(1,document.body.scrollHeight); S.fs=z; save(); render(); window.scrollTo(0, r*document.body.scrollHeight); return; }
+  if(b.dataset.tk!==undefined){ takvimOff = b.dataset.tk==="0" ? 0 : takvimOff+(+b.dataset.tk); render(); return; }
+  if(b.dataset.yuz){ takvimYuz=b.dataset.yuz; render(); return; }
+  if(b.id==="izinIste"){ izinIste(); return; }
+  if(b.id==="remTest"){ ac(); bildir("Deneme hatırlatması","Hatırlatıcılar bu şekilde görünecek.","hatirlatici"); return; }
+  if(b.dataset.kz){ S.kaza ||= {}; const k=b.dataset.kz; S.kaza[k]=Math.max(0,(S.kaza[k]||0)+(+b.dataset.kzd)); save(); render(); if(+b.dataset.kzd<0) toast("Kabul olsun"); return; }
   if(b.dataset.play){ e.preventDefault(); ac(); startPlay(b.dataset.play); return; }
   if(b.dataset.hiz){ S.hiz=+b.dataset.hiz; save(); if(player.audio){ player.audio.defaultPlaybackRate=player.audio.playbackRate=S.hiz; } document.querySelectorAll("[data-hiz]").forEach(x=>x.setAttribute("aria-pressed",String(+x.dataset.hiz===S.hiz))); return; }
   if(b.dataset.gor){ S.surahGor=b.dataset.gor; save(); const y=window.scrollY; render(); window.scrollTo(0,y); playMark(); return; }
@@ -1801,6 +2139,13 @@ main.addEventListener("click",e=>{
   }
 });
 main.addEventListener("change",e=>{
+  const el=e.target; S.rem ||= {};
+  if(el.dataset.rem){ const id=el.dataset.rem; S.rem[id]=Object.assign({},S.rem[id]||{},{on:el.checked}); save();
+    if(el.checked && "Notification" in window && Notification.permission==="default"){ Notification.requestPermission().then(()=>{ if(tab==="hatirlatici") render(); }).catch(()=>{}); }
+    toast(el.checked?"Hatırlatıcı açıldı":"Hatırlatıcı kapatıldı"); if(tab==="hatirlatici") render(); return; }
+  if(el.dataset.remoff){ const id=el.dataset.remoff; S.rem[id]=Object.assign({},S.rem[id]||{},{off:+el.value}); save(); render(); return; }
+  if(el.dataset.remtime){ const id=el.dataset.remtime; if(el.value){ S.rem[id]=Object.assign({},S.rem[id]||{},{time:el.value}); save(); render(); } return; }
+  if(el.dataset.kzset){ S.kaza ||= {}; S.kaza[el.dataset.kzset]=Math.max(0,parseInt(el.value,10)||0); save(); render(); return; }
   if(e.target.classList.contains("citySel")){ S.city=e.target.value; geoMsg=""; save(); render(); updateBand(); }
   if(e.target.id==="namazSel"){ S.namaz=e.target.value; save(); render(); }
 });
@@ -1812,31 +2157,10 @@ main.addEventListener("submit",e=>{
   S.custom.push(z); S.current=z.id; S.mode="serbest"; save(); toast("Eklendi, sayaçta açıldı"); go("sayac");
 });
 
-/* ================= VAKİT BİLDİRİMİ ================= */
-async function askNotify(input){
-  try{
-    if(!("Notification" in window)) throw new Error("yok");
-    const r = Notification.permission==="granted" ? "granted" : await Notification.requestPermission();
-    if(r!=="granted") throw new Error("izin");
-    toast("Vakit bildirimi açık");
-  }catch(e){ S.settings.notify=false; save(); if(input) input.checked=false; toast("Bildirim izni verilmedi. Telefon ayarlarından izin verebilirsiniz."); }
-}
-function checkVakit(){
-  if(!S.settings.notify) return;
-  const st=nowState(), k=st.cur, t=st.today[k]; if(!t) return;
-  const age=st.now-t, key=st.y+"-"+st.m+"-"+st.d+"-"+k;
-  if(age<0 || age>5*60000 || S.lastNotified===key) return;
-  S.lastNotified=key; save();
-  bell(); vibrate([400,200,400,200,400]);
-  const title = k==="gunes" ? "Güneş doğdu" : VAKIT_AD[k]+" vakti girdi";
-  const body = st.p.name+" · "+hm(t,st.p.tz)+(k==="gunes"?" · Sabah namazı vakti çıktı":"");
-  toast(title);
-  try{ if(Notification.permission==="granted" && navigator.serviceWorker) navigator.serviceWorker.ready.then(r=>r.showNotification(title,{body, icon:"icon-192.png", badge:"icon-192.png", tag:"vakit", renotify:true})); }catch(e){}
-}
-setInterval(checkVakit,15000);
-
-applyTheme(); render(); updateBand(); applyWake(); checkVakit();
+applyTheme(); render(); updateBand(); applyWake();
 if("serviceWorker" in navigator) window.addEventListener("load",()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); });
+if(S.lastVer && S.lastVer!==APP_VER) setTimeout(()=>toast("Uygulama "+APP_VER+" sürümüne güncellendi"),900);
+if(S.lastVer!==APP_VER){ S.lastVer=APP_VER; save(); }
 })();
 </script>
 </body>

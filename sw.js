@@ -1,5 +1,5 @@
 // Zikirmatik service worker: uygulamayı internetsiz de açılır yapar.
-const CACHE = "zikirmatik-v.07";
+const CACHE = "zikirmatik-v.09";
 const FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
@@ -27,5 +27,9 @@ self.addEventListener("fetch", e => {
 
 self.addEventListener("notificationclick", e => {
   e.notification.close();
-  e.waitUntil(self.clients.matchAll({ type: "window" }).then(list => list.length ? list[0].focus() : self.clients.openWindow("./")));
+  const url = (e.notification.data && e.notification.data.url) || "./";
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(list => {
+    if (list.length) { const c = list[0]; return (c.navigate ? c.navigate(url).catch(() => c) : Promise.resolve(c)).then(w => (w || c).focus()); }
+    return self.clients.openWindow(url);
+  }));
 });
