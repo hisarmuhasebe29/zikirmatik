@@ -180,6 +180,10 @@ main{padding-block:16px calc(108px + env(safe-area-inset-bottom,0px))}
 .okbadge{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;font-weight:800;font-size:20px}
 .mitem b.wrap{white-space:normal;line-height:1.3}
 .madet{flex:none;font-weight:700;color:var(--cobalt);font-variant-numeric:tabular-nums;background:var(--cobalt-soft);border-radius:999px;padding:3px 10px;font-size:13px}
+.gunluk{display:flex;flex-direction:column;gap:12px}
+.gunluk-h{display:flex;justify-content:space-between;align-items:center;gap:14px}
+.gunluk-h > div:first-child{display:flex;flex-direction:column}
+.gunluk-h small{color:var(--muted);font-size:12.5px}
 .tsira{display:flex;flex-direction:column;gap:6px}
 .tsira-h{display:flex;align-items:center;gap:8px;padding-left:2px}
 .tnum{width:26px;height:26px;border-radius:50%;background:var(--cobalt);color:var(--on-accent);display:grid;place-items:center;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums}
@@ -958,7 +962,7 @@ function hicri(date,tz){
   try{ const p=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{timeZone:tz,day:"numeric",month:"numeric",year:"numeric"}).formatToParts(date); const g=t=>parseInt(p.find(x=>x.type===t).value,10);
     const y=g("year"), m=g("month"), d=g("day"); if(!(m>=1&&m<=12)) return ""; return d+" "+HICRI_AY[m-1]+" "+y; }catch(e){ return ""; }
 }
-const APP_VER="v.12";
+const APP_VER="v.13";
 const RENKLER=[["mavi","İznik mavisi","#1E52AE","#0F3478"],["yesil","Ravza yeşili","#147A5C","#0A4936"],["turkuaz","Çini turkuazı","#0C8590","#064D55"],["bordo","Osmanlı bordosu","#8C2236","#56111F"],["gece","Gece ve altın","#1C2B50","#E2BC5E"],["mor","Lavanta","#5A45A6","#34266B"],["safir","Safir","#2C3794","#161D5C"],["zeytin","Zeytin dalı","#5E6E2A","#384216"],["kahve","Türk kahvesi","#6B4027","#3F2414"],["gul","Gül kurusu","#A85A72","#6E3044"],["safak","Şafak","#C0601F","#7C3210"],["antrasit","Antrasit","#363B43","#1C1F24"],["gumus","Gümüş","#C4CAD3","#5B6573"],["siyahbeyaz","Siyah beyaz","#111111","#FFFFFF"]];
 function applyTheme(){
   const r=document.documentElement;
@@ -1064,6 +1068,12 @@ function viewSayac(){
 }
 function curId(){ return S.mode==="diger" ? S.diger : S.current; }
 function bugunKey(){ const [y,m,d]=localToday(); return y+"-"+m+"-"+d; }
+function tesSifirla(sessiz){
+  TESBIHLER.forEach(t=>{ if(S.counters[t.id]) S.counters[t.id].count=0; if(S.seqs[t.id]) S.seqs[t.id]={step:0,count:0}; });
+  S.biten={d:bugunKey(),ids:[]}; S.tesGun=bugunKey(); S.diger=TESBIHLER[0].id; save();
+  if(!sessiz) toast("Günlük okuma baştan başladı");
+}
+function tesGunKontrol(){ if(S.tesOto!==false && S.tesGun!==bugunKey()){ const ilk=!S.tesGun; S.tesGun=bugunKey(); if(!ilk) tesSifirla(true); else save(); } }
 function bitenler(){ if(!S.biten || S.biten.d!==bugunKey()) S.biten={d:bugunKey(),ids:[]}; return S.biten.ids; }
 function bitir(id){ const b=bitenler(); if(!b.includes(id)) b.push(id); }
 function siradakiler(){
@@ -1084,7 +1094,7 @@ function openNext(){
     '<div class="nexthead"><span class="okbadge">✓</span><div><h2 style="margin:0">'+esc((cur.t||cur.tr||"Tesbih"))+' tamamlandı</h2><small>Kabul olsun. Sıradakini seçin.</small></div></div>'+
     (list.length? '<div class="mlist">'+list.map(t=>'<button class="mitem" data-nextm="'+esc(t.id)+'"><span class="mtx"><b class="wrap">'+esc(nm(t))+'</b><small>'+esc(t.steps ? t.steps.length+" okuma, sırayla" : (TG_AD[t.g]||t.src||t.mn||""))+'</small></span><span class="madet">'+fmt(adet(t))+'</span></button>').join("")+'</div>'
       : '<p style="margin:10px 0">Bugün listedeki bütün tesbihleri tamamladınız.</p>')+
-    '<button class="btn" id="closeSettings" style="margin-top:12px">Aynı tesbihle devam et</button></div></div>';
+    '<button class="btn" id="closeSettings" style="margin-top:12px">Aynı tesbihle devam et</button>'+(S.mode==="diger"?'<button class="btn" id="nextSifir" style="margin-top:6px">'+I.reset+'Hepsini sıfırla, 1. sıradan başla</button>':'')+'</div></div>';
 }
 function secNext(id){
   if(S.mode==="diger") S.diger=id; else S.current=id;
@@ -1136,6 +1146,7 @@ function doReset(){
 }
 
 /* ================= DİĞER TESBİHLER ================= */
+let confirmTesSifir=false;
 function viewTesbihler(){
   const card = it => {
     if(it.turkce){ const c=S.counters[it.id]||{count:0,laps:0}, t=targetOf(it.id);
@@ -1161,7 +1172,11 @@ function viewTesbihler(){
       '<div class="prog"><i style="width:'+(Math.min(1,c.count/t)*100).toFixed(1)+'%"></i></div>'+
       '<div class="tfoot"><span class="note">'+fmt(c.count)+' / '+fmt(t)+(c.laps?' · '+c.laps+' tur':'')+'</span><button class="btn primary" data-open="'+it.id+'">Sayaçta aç</button></div></div>';
   };
-  return '<section class="view"><div class="toolbar"><span class="note">Notlarınızdaki tesbihler · Arapça, okunuş, anlam ve adet</span></div>'+
+  const bt=bitenler().filter(id=>tById(id)).length;
+  return '<section class="view"><div class="card gunluk"><div class="gunluk-h"><div><b>Bugünkü okuma</b><small>'+bt+' / '+TESBIHLER.length+' tamamlandı</small></div><div class="prog" style="flex:1;max-width:160px"><i style="width:'+(bt/TESBIHLER.length*100).toFixed(1)+'%"></i></div></div>'+
+    '<div class="actions"><button class="btn primary" id="tesBasla">1. sıradan başla</button><button class="btn" id="tesSifir">'+I.reset+'Sıfırla, baştan say</button></div>'+
+    (confirmTesSifir?'<div class="confirm"><p>Bütün tesbih sayaçları sıfırlansın mı? İstatistikleriniz silinmez.</p><button class="btn" id="tesSifirHayir">Vazgeç</button><button class="btn danger-solid" id="tesSifirEvet">Sıfırla</button></div>':'')+
+    '<div class="remrow"><div><b>Her yeni gün kendiliğinden sıfırla</b><small>Dünden yarım kalanlar ertesi gün baştan başlar</small></div><input type="checkbox" class="switch" id="tesOto"'+(S.tesOto!==false?' checked':'')+' aria-label="Her yeni gün kendiliğinden sıfırla"></div></div>'+
     '<div class="list">'+TESBIHLER.map((it,i)=>'<div class="tsira"><div class="tsira-h"><span class="tnum">'+(i+1)+'</span><span class="tgrp">'+esc(TG_AD[it.g]||"")+'</span></div>'+card(it)+'</div>').join("")+'</div></section>';
 }
 
@@ -2147,6 +2162,7 @@ document.getElementById("sheetHost").addEventListener("click",e=>{
   else if(b.id==="mTheme"){ openTheme(); }
   else if(b.id==="mProfil"){ openSettings(); }
   else if(b.dataset.nextm){ secNext(b.dataset.nextm); }
+  else if(b.id==="nextSifir"){ tesSifirla(); document.getElementById("sheetHost").innerHTML=""; S.mode="diger"; save(); if(tab!=="sayac") go("sayac"); else render(); }
   else { const mp={mTakvim:"takvim",mKible:"kible",mMubarek:"mubarek",mNafile:"nafile",mHatir:"hatirlatici",mKaza:"kaza"}[b.id]; if(mp){ close(); if(mp==="takvim"){ takvimOff=0; takvimYuz="on"; } go(mp); } }
 });
 document.getElementById("openKible").addEventListener("click",()=>go("kible"));
@@ -2224,6 +2240,10 @@ main.addEventListener("click",e=>{
   if(b.id==="remTest"){ ac(); bildir("Deneme hatırlatması","Hatırlatıcılar bu şekilde görünecek.","hatirlatici"); return; }
   if(b.dataset.kz){ S.kaza ||= {}; const k=b.dataset.kz; S.kaza[k]=Math.max(0,(S.kaza[k]||0)+(+b.dataset.kzd)); save(); render(); if(+b.dataset.kzd<0) toast("Kabul olsun"); return; }
   if(b.dataset.opennext){ openNext(); return; }
+  if(b.id==="tesSifir"){ confirmTesSifir=true; render(); return; }
+  if(b.id==="tesSifirHayir"){ confirmTesSifir=false; render(); return; }
+  if(b.id==="tesSifirEvet"){ confirmTesSifir=false; tesSifirla(); render(); return; }
+  if(b.id==="tesBasla"){ const b2=bitenler(); const ilk=TESBIHLER.find(t=>!b2.includes(t.id))||TESBIHLER[0]; S.mode="diger"; S.diger=ilk.id; save(); go("sayac"); return; }
   if(b.dataset.play){ e.preventDefault(); ac(); startPlay(b.dataset.play); return; }
   if(b.dataset.hiz){ S.hiz=+b.dataset.hiz; save(); if(player.audio){ player.audio.defaultPlaybackRate=player.audio.playbackRate=S.hiz; } document.querySelectorAll("[data-hiz]").forEach(x=>x.setAttribute("aria-pressed",String(+x.dataset.hiz===S.hiz))); return; }
   if(b.dataset.gor){ S.surahGor=b.dataset.gor; save(); const y=window.scrollY; render(); window.scrollTo(0,y); playMark(); return; }
@@ -2243,7 +2263,8 @@ main.addEventListener("click",e=>{
   }
 });
 main.addEventListener("change",e=>{
-  const el=e.target; S.rem ||= {};
+  const el=e.target;
+  if(el.id==="tesOto"){ S.tesOto=el.checked; S.tesGun=bugunKey(); save(); toast(el.checked?"Her gün kendiliğinden sıfırlanacak":"Otomatik sıfırlama kapatıldı"); return; } S.rem ||= {};
   if(el.dataset.rem){ const id=el.dataset.rem; S.rem[id]=Object.assign({},S.rem[id]||{},{on:el.checked}); save();
     if(el.checked && "Notification" in window && Notification.permission==="default"){ Notification.requestPermission().then(()=>{ if(tab==="hatirlatici") render(); }).catch(()=>{}); }
     toast(el.checked?"Hatırlatıcı açıldı":"Hatırlatıcı kapatıldı"); if(tab==="hatirlatici") render(); return; }
@@ -2261,6 +2282,8 @@ main.addEventListener("submit",e=>{
   S.custom.push(z); S.current=z.id; S.mode="serbest"; save(); toast("Eklendi, sayaçta açıldı"); go("sayac");
 });
 
+if(!S.mig13){ S.mig13=1; if(S.targets && S.targets.t_fetih!==100){ S.targets.t_fetih=100; if(S.counters.t_fetih && S.counters.t_fetih.count>100) S.counters.t_fetih.count=0; } save(); }
+tesGunKontrol(); setInterval(()=>{ const g=S.tesGun; tesGunKontrol(); if(g!==S.tesGun && (tab==="tesbihler"||tab==="sayac")) render(); },60000);
 applyTheme(); render(); updateBand(); applyWake();
 if("serviceWorker" in navigator) window.addEventListener("load",()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); });
 if(S.lastVer && S.lastVer!==APP_VER) setTimeout(()=>toast("Uygulama "+APP_VER+" sürümüne güncellendi"),900);
