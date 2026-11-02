@@ -180,6 +180,17 @@ main{padding-block:16px calc(108px + env(safe-area-inset-bottom,0px))}
 .okbadge{flex:none;width:40px;height:40px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;font-weight:800;font-size:20px}
 .mitem b.wrap{white-space:normal;line-height:1.3}
 .madet{flex:none;font-weight:700;color:var(--cobalt);font-variant-numeric:tabular-nums;background:var(--cobalt-soft);border-radius:999px;padding:3px 10px;font-size:13px}
+.mrow{display:flex;align-items:stretch}
+.mrow + .mrow{border-top:1px solid var(--line)}
+.mrow .mitem{flex:1;min-width:0}
+.mitem + .mitem{border-top:1px solid var(--line)}
+.okudum{flex:none;width:68px;border:0;border-left:1px solid var(--line);background:var(--ok-soft);color:var(--ok);font-weight:800;font-size:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.okudum small{font-size:11px;font-weight:700}
+.tbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.tbtns .btn{padding:10px 14px}
+.donebtn{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.tsira.bitti .tnum{background:var(--ok)}
+.tsira.bitti .tcard{opacity:.72}
 .gunluk{display:flex;flex-direction:column;gap:12px}
 .gunluk-h{display:flex;justify-content:space-between;align-items:center;gap:14px}
 .gunluk-h > div:first-child{display:flex;flex-direction:column}
@@ -962,7 +973,7 @@ function hicri(date,tz){
   try{ const p=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{timeZone:tz,day:"numeric",month:"numeric",year:"numeric"}).formatToParts(date); const g=t=>parseInt(p.find(x=>x.type===t).value,10);
     const y=g("year"), m=g("month"), d=g("day"); if(!(m>=1&&m<=12)) return ""; return d+" "+HICRI_AY[m-1]+" "+y; }catch(e){ return ""; }
 }
-const APP_VER="v.13";
+const APP_VER="v.14";
 const RENKLER=[["mavi","İznik mavisi","#1E52AE","#0F3478"],["yesil","Ravza yeşili","#147A5C","#0A4936"],["turkuaz","Çini turkuazı","#0C8590","#064D55"],["bordo","Osmanlı bordosu","#8C2236","#56111F"],["gece","Gece ve altın","#1C2B50","#E2BC5E"],["mor","Lavanta","#5A45A6","#34266B"],["safir","Safir","#2C3794","#161D5C"],["zeytin","Zeytin dalı","#5E6E2A","#384216"],["kahve","Türk kahvesi","#6B4027","#3F2414"],["gul","Gül kurusu","#A85A72","#6E3044"],["safak","Şafak","#C0601F","#7C3210"],["antrasit","Antrasit","#363B43","#1C1F24"],["gumus","Gümüş","#C4CAD3","#5B6573"],["siyahbeyaz","Siyah beyaz","#111111","#FFFFFF"]];
 function applyTheme(){
   const r=document.documentElement;
@@ -1082,6 +1093,20 @@ function siradakiler(){
   if(S.mode==="serbest") return allZikir().filter(z=>z.id!==S.current && !b.includes(z.id));
   return [];
 }
+function tesAdet(t){ return t.steps?t.steps.reduce((a,x)=>a+x.n,0):targetOf(t.id); }
+function elleOkudum(id){
+  const t=tById(id); if(!t) return; const b=bitenler(); if(b.includes(id)) return;
+  bitir(id); S.elle ||= {}; S.elle[bugunKey()+"|"+id]=1;
+  if(t.steps) t.steps.forEach((st,i)=>addDaily(id+"#"+i,st.n)); else { addDaily(id,tesAdet(t)); const c=ctr(id); c.total+=tesAdet(t); c.count=0; }
+  if(S.seqs[id]) S.seqs[id]={step:0,count:0};
+  save(); toast("Okundu olarak işaretlendi");
+}
+function elleGeriAl(id){
+  const t=tById(id); if(!t) return; const k=bugunKey()+"|"+id;
+  S.biten.ids=bitenler().filter(x=>x!==id);
+  if(S.elle && S.elle[k]){ delete S.elle[k]; if(t.steps) t.steps.forEach((st,i)=>addDaily(id+"#"+i,-st.n)); else { addDaily(id,-tesAdet(t)); const c=ctr(id); c.total=Math.max(0,c.total-tesAdet(t)); } }
+  save(); toast("İşaret kaldırıldı");
+}
 function siradakiKart(){
   return '<button class="btn primary nextbtn" data-opennext="1">Sıradaki tesbihi seç '+I.chevR+'</button>';
 }
@@ -1092,7 +1117,7 @@ function openNext(){
   const cur=zById(curId());
   document.getElementById("sheetHost").innerHTML='<div class="sheet center" id="sheet"><div class="panel" role="dialog" aria-label="Sıradaki tesbih">'+
     '<div class="nexthead"><span class="okbadge">✓</span><div><h2 style="margin:0">'+esc((cur.t||cur.tr||"Tesbih"))+' tamamlandı</h2><small>Kabul olsun. Sıradakini seçin.</small></div></div>'+
-    (list.length? '<div class="mlist">'+list.map(t=>'<button class="mitem" data-nextm="'+esc(t.id)+'"><span class="mtx"><b class="wrap">'+esc(nm(t))+'</b><small>'+esc(t.steps ? t.steps.length+" okuma, sırayla" : (TG_AD[t.g]||t.src||t.mn||""))+'</small></span><span class="madet">'+fmt(adet(t))+'</span></button>').join("")+'</div>'
+    (list.length? '<p class="note" style="margin:0 0 4px">Elle çektiğiniz okumaları “Okudum” ile listeden düşebilirsiniz.</p><div class="mlist">'+list.map(t=>'<div class="mrow"><button class="mitem" data-nextm="'+esc(t.id)+'"><span class="mtx"><b class="wrap">'+esc(nm(t))+'</b><small>'+esc(t.steps ? t.steps.length+" okuma, sırayla" : (TG_AD[t.g]||t.src||t.mn||""))+'</small></span><span class="madet">'+fmt(adet(t))+'</span></button><button class="okudum" data-okudum="'+esc(t.id)+'" aria-label="'+esc(nm(t))+' okundu">✓<small>Okudum</small></button></div>').join("")+'</div>'
       : '<p style="margin:10px 0">Bugün listedeki bütün tesbihleri tamamladınız.</p>')+
     '<button class="btn" id="closeSettings" style="margin-top:12px">Aynı tesbihle devam et</button>'+(S.mode==="diger"?'<button class="btn" id="nextSifir" style="margin-top:6px">'+I.reset+'Hepsini sıfırla, 1. sıradan başla</button>':'')+'</div></div>';
 }
@@ -1153,7 +1178,7 @@ function viewTesbihler(){
       return '<div class="card tcard"><div class="thead"><p style="font-size:16.5px;font-weight:600;max-width:60ch;line-height:1.45">'+esc(it.tr)+'</p><div class="adet"><b>'+fmt(t)+'</b><span>defa</span></div></div>'+
         (it.ref?'<button class="dl" style="align-self:flex-start" data-open="'+it.ref+'">Arapçası: '+esc(tById(it.ref).tr)+'</button>':'<p class="note">Kendi dilinizle, içten okunacak dua.</p>')+
         '<div class="prog"><i style="width:'+(Math.min(1,c.count/t)*100).toFixed(1)+'%"></i></div>'+
-        '<div class="tfoot"><span class="note">'+fmt(c.count)+' / '+fmt(t)+(c.laps?' · '+c.laps+' tur':'')+'</span><button class="btn primary" data-open="'+it.id+'">Sayaçta aç</button></div></div>'; }
+        '<div class="tfoot"><span class="note">'+fmt(c.count)+' / '+fmt(t)+(c.laps?' · '+c.laps+' tur':'')+'</span><span class="tbtns">'+(bitenler().includes(it.id)?'<button class="btn donebtn" data-geri="'+it.id+'">✓ Bugün okundu</button>':'<button class="btn" data-okudum2="'+it.id+'">✓ Okudum</button>')+'<button class="btn primary" data-open="'+it.id+'">Sayaçta aç</button></span></div></div>'; }
     if(it.steps){
       let st=S.seqs[it.id]||{step:0,count:0}; const steps=it.steps.map(stepFull), total=steps.reduce((a,s)=>a+s.n,0); if(st.step>=steps.length) st={step:0,count:0};
       const doneN=steps.slice(0,st.step).reduce((a,s)=>a+s.n,0)+Math.min(st.count,steps[st.step].n);
@@ -1161,7 +1186,7 @@ function viewTesbihler(){
         '<div class="seqlist">'+steps.map((s,i)=>'<div class="'+(i<st.step?'done':(i===st.step&&doneN>0?'on':''))+'"><i>'+(i<st.step?'✓':i+1)+'</i><span>'+esc(s.tr)+(s.tahmin?' <span class="guess">· adet önerildi</span>':'')+'</span><b>'+s.n+'×</b></div>').join("")+'</div>'+
         steps.filter(s=>!s.dua).slice(0,it.id==="t_ferdun"?2:0).map(s=>'<div class="arbox"><div class="ar" lang="ar">'+esc(s.ar)+'</div></div><p class="ok">'+esc(s.ok||s.tr)+'</p><p class="ml">'+esc(s.mn)+'</p>').join("")+
         '<div class="prog"><i style="width:'+(doneN/total*100).toFixed(1)+'%"></i></div>'+
-        '<div class="tfoot"><span class="note">'+fmt(doneN)+' / '+fmt(total)+'</span><button class="btn primary" data-open="'+it.id+'">Sayaçta aç</button></div></div>';
+        '<div class="tfoot"><span class="note">'+fmt(doneN)+' / '+fmt(total)+'</span><span class="tbtns">'+(bitenler().includes(it.id)?'<button class="btn donebtn" data-geri="'+it.id+'">✓ Bugün okundu</button>':'<button class="btn" data-okudum2="'+it.id+'">✓ Okudum</button>')+'<button class="btn primary" data-open="'+it.id+'">Sayaçta aç</button></span></div></div>';
     }
     const c=S.counters[it.id]||{count:0,laps:0}, t=targetOf(it.id);
     return '<div class="card tcard"><div class="thead"><div><b>'+esc(it.tr)+'</b><small>'+esc(it.src||"")+'</small></div><div class="adet'+(it.tahmin?' soft':'')+'"><b>'+fmt(t)+'</b><span>defa</span></div></div>'+
@@ -1170,14 +1195,14 @@ function viewTesbihler(){
       (it.kasem?'<div class="kasem"><span class="label">Usûlü: her '+it.kasem.her+'’de bir kasem</span><div class="ar" lang="ar">'+esc(it.kasem.ar)+'</div><b>'+esc(it.kasem.tr)+'</b><span class="note">'+esc(it.kasem.mn)+'</span></div>':'')+
       (it.tahmin?'<span class="guess">'+esc(typeof it.tahmin==="string"?it.tahmin:"Notta adet yok; "+fmt(t)+" önerildi, sayaçta değiştirebilirsiniz")+'</span>':'')+
       '<div class="prog"><i style="width:'+(Math.min(1,c.count/t)*100).toFixed(1)+'%"></i></div>'+
-      '<div class="tfoot"><span class="note">'+fmt(c.count)+' / '+fmt(t)+(c.laps?' · '+c.laps+' tur':'')+'</span><button class="btn primary" data-open="'+it.id+'">Sayaçta aç</button></div></div>';
+      '<div class="tfoot"><span class="note">'+fmt(c.count)+' / '+fmt(t)+(c.laps?' · '+c.laps+' tur':'')+'</span><span class="tbtns">'+(bitenler().includes(it.id)?'<button class="btn donebtn" data-geri="'+it.id+'">✓ Bugün okundu</button>':'<button class="btn" data-okudum2="'+it.id+'">✓ Okudum</button>')+'<button class="btn primary" data-open="'+it.id+'">Sayaçta aç</button></span></div></div>';
   };
   const bt=bitenler().filter(id=>tById(id)).length;
   return '<section class="view"><div class="card gunluk"><div class="gunluk-h"><div><b>Bugünkü okuma</b><small>'+bt+' / '+TESBIHLER.length+' tamamlandı</small></div><div class="prog" style="flex:1;max-width:160px"><i style="width:'+(bt/TESBIHLER.length*100).toFixed(1)+'%"></i></div></div>'+
     '<div class="actions"><button class="btn primary" id="tesBasla">1. sıradan başla</button><button class="btn" id="tesSifir">'+I.reset+'Sıfırla, baştan say</button></div>'+
     (confirmTesSifir?'<div class="confirm"><p>Bütün tesbih sayaçları sıfırlansın mı? İstatistikleriniz silinmez.</p><button class="btn" id="tesSifirHayir">Vazgeç</button><button class="btn danger-solid" id="tesSifirEvet">Sıfırla</button></div>':'')+
     '<div class="remrow"><div><b>Her yeni gün kendiliğinden sıfırla</b><small>Dünden yarım kalanlar ertesi gün baştan başlar</small></div><input type="checkbox" class="switch" id="tesOto"'+(S.tesOto!==false?' checked':'')+' aria-label="Her yeni gün kendiliğinden sıfırla"></div></div>'+
-    '<div class="list">'+TESBIHLER.map((it,i)=>'<div class="tsira"><div class="tsira-h"><span class="tnum">'+(i+1)+'</span><span class="tgrp">'+esc(TG_AD[it.g]||"")+'</span></div>'+card(it)+'</div>').join("")+'</div></section>';
+    '<div class="list">'+TESBIHLER.map((it,i)=>'<div class="tsira'+(bitenler().includes(it.id)?' bitti':'')+'"><div class="tsira-h"><span class="tnum">'+(bitenler().includes(it.id)?'✓':(i+1))+'</span><span class="tgrp">'+esc(TG_AD[it.g]||"")+'</span></div>'+card(it)+'</div>').join("")+'</div></section>';
 }
 
 /* ================= ZİKİRLER ================= */
@@ -2162,6 +2187,7 @@ document.getElementById("sheetHost").addEventListener("click",e=>{
   else if(b.id==="mTheme"){ openTheme(); }
   else if(b.id==="mProfil"){ openSettings(); }
   else if(b.dataset.nextm){ secNext(b.dataset.nextm); }
+  else if(b.dataset.okudum){ elleOkudum(b.dataset.okudum); openNext(); }
   else if(b.id==="nextSifir"){ tesSifirla(); document.getElementById("sheetHost").innerHTML=""; S.mode="diger"; save(); if(tab!=="sayac") go("sayac"); else render(); }
   else { const mp={mTakvim:"takvim",mKible:"kible",mMubarek:"mubarek",mNafile:"nafile",mHatir:"hatirlatici",mKaza:"kaza"}[b.id]; if(mp){ close(); if(mp==="takvim"){ takvimOff=0; takvimYuz="on"; } go(mp); } }
 });
@@ -2240,6 +2266,8 @@ main.addEventListener("click",e=>{
   if(b.id==="remTest"){ ac(); bildir("Deneme hatırlatması","Hatırlatıcılar bu şekilde görünecek.","hatirlatici"); return; }
   if(b.dataset.kz){ S.kaza ||= {}; const k=b.dataset.kz; S.kaza[k]=Math.max(0,(S.kaza[k]||0)+(+b.dataset.kzd)); save(); render(); if(+b.dataset.kzd<0) toast("Kabul olsun"); return; }
   if(b.dataset.opennext){ openNext(); return; }
+  if(b.dataset.okudum2){ elleOkudum(b.dataset.okudum2); const y=scrollY; render(); scrollTo(0,y); return; }
+  if(b.dataset.geri){ elleGeriAl(b.dataset.geri); const y=scrollY; render(); scrollTo(0,y); return; }
   if(b.id==="tesSifir"){ confirmTesSifir=true; render(); return; }
   if(b.id==="tesSifirHayir"){ confirmTesSifir=false; render(); return; }
   if(b.id==="tesSifirEvet"){ confirmTesSifir=false; tesSifirla(); render(); return; }
