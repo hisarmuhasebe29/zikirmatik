@@ -236,13 +236,12 @@ p{margin:0}
 .steps span.done{color:var(--turq)}
 .ringwrap{display:grid;place-items:center;--tapsz:clamp(260px,min(88vw,calc(100svh - 400px)),440px)}
 .ringwrap>*{grid-area:1/1}
-.hsw{width:min(var(--tapsz),100%);aspect-ratio:1;height:auto;margin:0;opacity:.004;border-radius:50%;clip-path:circle(50%);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;outline:none;z-index:2}
+main.peek{position:fixed;bottom:0;overflow:hidden;pointer-events:none;z-index:5;will-change:transform;padding-top:16px}
+html,body{overflow-x:clip}
+.hswgrid{position:relative;width:min(var(--tapsz),100%);aspect-ratio:1;border-radius:50%;clip-path:circle(50%);overflow:hidden;z-index:2;touch-action:manipulation}
+.hswin{position:absolute;display:flex;flex-wrap:wrap;align-content:flex-start}
+.hsw{flex:none;margin:0;opacity:.004;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;outline:none}
 .tap.pressed{transform:scale(.97)}
-#main.sl-l{animation:slL .22s ease-out}#main.sl-r{animation:slR .22s ease-out}
-@keyframes slL{from{transform:translateX(36px);opacity:.4}to{transform:none;opacity:1}}
-@keyframes slR{from{transform:translateX(-36px);opacity:.4}to{transform:none;opacity:1}}
-#main.dragging{transition:none}
-#main.snap{transition:transform .18s ease-out}
 .vibtest{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;background:var(--bead-off);margin:4px 0 10px}
 .vibtest input{transform:scale(1.25);margin-right:6px}
 .quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
@@ -842,7 +841,12 @@ const HAS_VIB = typeof navigator.vibrate==="function" && !IS_IOS;
    değiştirdiği gerçek bir "switch" anahtarı hâlâ dokunuş hissi veriyor. Bu yüzden sayaç dairesinin
    üstüne görünmez bir anahtar koyuyoruz: parmak doğrudan ona değiyor. */
 const IOS_TAP_SWITCH = IS_IOS;
-let nativeHap=false;
+let nativeHap=false, HSW=null;
+/* Anahtar yalnızca kendi küçük alanında tık hissi veriyor; bu yüzden daireyi baştan sona
+   gerçek boyutlu anahtarlarla döşüyoruz: dairenin neresine dokunsanız bir anahtara değersiniz. */
+function hswSize(){ if(HSW) return HSW; let w=0,h=0; try{ const i=document.createElement("input"); i.type="checkbox"; i.setAttribute("switch",""); i.className="hsw"; i.style.position="absolute"; i.style.visibility="hidden"; document.body.appendChild(i); w=i.offsetWidth; h=i.offsetHeight; i.remove(); }catch(e){} if(w>=24&&h>=14&&w<=120&&h<=80) HSW={w,h}; return HSW||{w:51,h:31}; }
+function hswGrid(){ const {w,h}=hswSize(), D=440, cols=Math.ceil((D+2*w)/w), rows=Math.ceil((D+2*h)/h);
+  return '<div class="hswgrid" aria-hidden="true"><div class="hswin" style="left:-'+w+'px;top:-'+h+'px;width:'+(cols*w)+'px">'+'<input type="checkbox" switch class="hsw" tabindex="-1">'.repeat(cols*rows)+'</div></div>'; }
 function haptic1(){ try{ const l=document.createElement("label"); l.setAttribute("aria-hidden","true"); l.style.cssText="position:fixed;left:-99px;top:0;width:1px;height:1px;overflow:hidden;opacity:0"; const i=document.createElement("input"); i.type="checkbox"; i.setAttribute("switch",""); l.appendChild(i); document.body.appendChild(l); l.click(); document.body.removeChild(l); }catch(e){} }
 function haptic(n){ haptic1(); for(let k=1;k<n;k++) setTimeout(haptic1, k*120); }
 function vibrate(p){
@@ -938,36 +942,59 @@ function renderTabs(){ markHead();
   document.getElementById("tabs").innerHTML = TABS.map(([k,l])=>'<button data-tab="'+k+'"'+(k===active?' aria-current="page"':'')+'>'+I[k]+'<span>'+l+'</span></button>').join("");
 }
 document.getElementById("tabs").addEventListener("click",e=>{ const b=e.target.closest("[data-tab]"); if(b) go(b.dataset.tab); });
-let swipeDir=0;
 function go(t){ if(typeof stopPlay==="function" && t!=="dualar") stopPlay(); tab=t; try{ history.replaceState(null,"","#"+t); }catch(e){} stopCompass(); confirmReset=false; render(); window.scrollTo(0,0);
-  if(swipeDir){ const m=document.getElementById("main"); m.classList.remove("sl-l","sl-r","snap"); m.style.transform=""; void m.offsetWidth; m.classList.add(swipeDir>0?"sl-l":"sl-r"); setTimeout(()=>m.classList.remove("sl-l","sl-r"),260); swipeDir=0; } }
-/* Instagram gibi: ana ekranda sağa/sola kaydırarak alt sekmeler arasında geçiş */
+  }
+/* Instagram gibi: ana ekranda sağa/sola kaydırarak alt sekmeler arasında geçiş.
+   Sayfa parmağı birebir takip eder, yandaki sekme yanından kayarak gelir. */
+let nbCache={}, nbTimer=0;
+function nbIdx(){ const a=tab==="zikirler"?"sayac":tab; return TABS.findIndex(x=>x[0]===a); }
+function scheduleNeighbors(){ nbCache={}; clearTimeout(nbTimer); if(!("ontouchstart" in window)) return;
+  nbTimer=setTimeout(()=>{ const i=nbIdx(); if(i<0) return; [i-1,i+1].forEach(j=>{ if(j>=0&&j<TABS.length){ const k=TABS[j][0]; try{ nbCache[k]=viewHTML(k); }catch(e){} } }); },350); }
 (function(){
-  const m=document.getElementById("main"); let sx=0, sy=0, st=0, lock=0, ok=false;
-  const SKIP=".tap,.hsw,.subnav,.steps,.tablewrap,.speed,.duagrid,input,textarea,select,[data-noswipe],.compass,audio";
-  const idx=()=>{ const a=tab==="zikirler"?"sayac":tab; return TABS.findIndex(x=>x[0]===a); };
+  const m=document.getElementById("main"); let sx=0, sy=0, lx=0, lt=0, vx=0, lock=0, ok=false, peek=null, pdir=0, busy=false, W=0, nk=null;
+  const SKIP=".subnav,.steps,.tablewrap,.speed,.duagrid,input,textarea,select,[data-noswipe],.compass,audio";
+  const EASE="cubic-bezier(.2,.85,.25,1)";
   const hScroll=el=>{ for(let n=el; n && n!==m; n=n.parentElement){ if(n.scrollWidth>n.clientWidth+4){ const ox=getComputedStyle(n).overflowX; if(ox==="auto"||ox==="scroll") return true; } } return false; };
+  const setX=(x,anim,ms)=>{ const tr=anim?"transform "+ms+"ms "+EASE:"none";
+    m.style.transition=tr; m.style.transform=x?"translate3d("+x+"px,0,0)":"";
+    if(peek){ peek.style.transition=tr; peek.style.transform="translate3d("+(x+pdir*W)+"px,0,0)"; } };
+  const makePeek=dir=>{
+    const i=nbIdx(), j=i+dir; if(j<0||j>=TABS.length) return false;
+    nk=TABS[j][0]; const html=nbCache[nk]||viewHTML(nk);
+    const r=m.getBoundingClientRect(), top=Math.max(r.top,0);
+    peek=document.createElement("main"); peek.className="peek"; peek.setAttribute("aria-hidden","true");
+    peek.style.cssText="top:"+top+"px;left:"+r.left+"px;width:"+r.width+"px";
+    peek.innerHTML=html; m.parentElement.appendChild(peek); pdir=dir; return true; };
+  const dropPeek=()=>{ if(peek){ peek.remove(); peek=null; } pdir=0; nk=null; };
   m.addEventListener("touchstart",e=>{
-    ok=false; lock=0;
-    if(e.touches.length!==1 || document.getElementById("sheetHost").firstElementChild || idx()<0) return;
+    ok=false; lock=0; if(busy) return;
+    if(e.touches.length!==1 || document.getElementById("sheetHost").firstElementChild || nbIdx()<0) return;
     const t=e.target; if(t.closest && t.closest(SKIP)) return; if(hScroll(t)) return;
-    sx=e.touches[0].clientX; sy=e.touches[0].clientY; st=Date.now(); ok=true;
+    sx=lx=e.touches[0].clientX; sy=e.touches[0].clientY; lt=performance.now(); vx=0; ok=true; W=m.getBoundingClientRect().width+16;
   },{passive:true});
   m.addEventListener("touchmove",e=>{
-    if(!ok) return; const dx=e.touches[0].clientX-sx, dy=e.touches[0].clientY-sy;
-    if(!lock){ if(Math.abs(dx)>12 && Math.abs(dx)>Math.abs(dy)*1.4) lock=1; else if(Math.abs(dy)>12) { lock=-1; ok=false; return; } else return; }
-    if(lock===1){ const i=idx(), edge=(dx>0&&i===0)||(dx<0&&i===TABS.length-1); m.classList.add("dragging"); m.style.transform="translateX("+(edge?dx*.15:dx*.45)+"px)"; }
-  },{passive:true});
-  const end=e=>{
-    if(!ok){ return; } ok=false; m.classList.remove("dragging");
-    const tt=(e.changedTouches&&e.changedTouches[0])||{clientX:sx,clientY:sy};
-    const dx=tt.clientX-sx, dy=tt.clientY-sy, dt=Date.now()-st, i=idx();
-    const fast = dt<300 && Math.abs(dx)>40;
-    if(lock===1 && (Math.abs(dx)>70 || fast) && Math.abs(dx)>Math.abs(dy)*1.4){
-      const j = dx<0 ? i+1 : i-1;
-      if(j>=0 && j<TABS.length){ swipeDir = dx<0?1:-1; m.style.transform=""; vibrate(8); go(TABS[j][0]); if(!S.swipeIpucu){ S.swipeIpucu=1; save(); } return; }
+    if(!ok) return; const x=e.touches[0].clientX, dx=x-sx, dy=e.touches[0].clientY-sy;
+    if(!lock){ if(Math.abs(dx)>10 && Math.abs(dx)>Math.abs(dy)*1.2) lock=1; else if(Math.abs(dy)>10){ lock=-1; ok=false; return; } else return; }
+    e.preventDefault();
+    const now=performance.now(), dt=Math.max(1,now-lt); vx=0.7*((x-lx)/dt)+0.3*vx; lx=x; lt=now;
+    const dir = dx<0 ? 1 : -1;
+    if(pdir!==dir){ dropPeek(); makePeek(dir); }
+    setX(peek ? dx : dx/(1+Math.abs(dx)/90)*0.6, false);  /* kenarda yaylanma */
+  },{passive:false});
+  const end=()=>{
+    if(!ok) return; ok=false; if(lock!==1) return;
+    const dx=lx-sx;
+    const go_ = peek && ((Math.abs(dx)>W*0.28) || (Math.abs(vx)>0.35 && Math.sign(vx)===Math.sign(dx) && Math.abs(dx)>24));
+    if(go_){
+      busy=true; const target=-pdir*W, left=Math.abs(target-dx);
+      const ms=Math.round(Math.max(140, Math.min(320, left/Math.max(Math.abs(vx),1.2))));
+      setX(target,true,ms); vibrate(8);
+      const k=nk, pk=peek;
+      setTimeout(()=>{ m.style.transition="none"; m.style.transform=""; go(k); if(pk) pk.remove(); peek=null; pdir=0; busy=false; if(!S.swipeIpucu){ S.swipeIpucu=1; save(); } }, ms+20);
+    } else {
+      busy=true; setX(0,true,240);
+      setTimeout(()=>{ dropPeek(); m.style.transition=""; m.style.transform=""; busy=false; },260);
     }
-    if(m.style.transform){ m.classList.add("snap"); m.style.transform=""; setTimeout(()=>m.classList.remove("snap"),200); }
   };
   m.addEventListener("touchend",end,{passive:true}); m.addEventListener("touchcancel",end,{passive:true});
 })();
@@ -1031,7 +1058,7 @@ function hicri(date,tz){
   try{ const p=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{timeZone:tz,day:"numeric",month:"numeric",year:"numeric"}).formatToParts(date); const g=t=>parseInt(p.find(x=>x.type===t).value,10);
     const y=g("year"), m=g("month"), d=g("day"); if(!(m>=1&&m<=12)) return ""; return d+" "+HICRI_AY[m-1]+" "+y; }catch(e){ return ""; }
 }
-const APP_VER="v.15";
+const APP_VER="v.16";
 const RENKLER=[["mavi","İznik mavisi","#1E52AE","#0F3478"],["yesil","Ravza yeşili","#147A5C","#0A4936"],["turkuaz","Çini turkuazı","#0C8590","#064D55"],["bordo","Osmanlı bordosu","#8C2236","#56111F"],["gece","Gece ve altın","#1C2B50","#E2BC5E"],["mor","Lavanta","#5A45A6","#34266B"],["safir","Safir","#2C3794","#161D5C"],["zeytin","Zeytin dalı","#5E6E2A","#384216"],["kahve","Türk kahvesi","#6B4027","#3F2414"],["gul","Gül kurusu","#A85A72","#6E3044"],["safak","Şafak","#C0601F","#7C3210"],["antrasit","Antrasit","#363B43","#1C1F24"],["gumus","Gümüş","#C4CAD3","#5B6573"],["siyahbeyaz","Siyah beyaz","#111111","#FFFFFF"]];
 function applyTheme(){
   const r=document.documentElement;
@@ -1121,7 +1148,7 @@ function viewSayac(){
     '<div class="zikir-head">'+(src?'<div class="src">'+esc(src)+'</div>':'')+'<div class="ar'+(longAr?' long':'')+'" lang="ar">'+esc(z.ar||"")+'</div><div class="tr">'+esc(z.ok&&z.tr.includes("…")?z.ok:z.tr)+'</div>'+(z.ok&&!z.tr.includes("…")?'<div class="mn" style="font-style:italic">'+esc(z.ok)+'</div>':'')+'<div class="mn">'+esc(z.mn||"")+'</div>'+
       (S.mode==="serbest"?'<button class="change" data-go="zikirler">Zikri değiştir</button>':S.mode==="diger"?'<button class="change" data-go="tesbihler">Tesbihi değiştir</button>':'')+'</div>'+
     '<div class="ringwrap"><button class="tap" id="tap" aria-label="Say. Şu an '+count+' / '+target+'">'+ringSVG(count,target)+
-      '<div class="tap-center"><div class="count">'+fmt(count)+'</div><div class="of">/ '+fmt(target)+'</div>'+(!seq && x.laps>0 ? '<div class="turpill">'+x.laps+'. tur</div>' : seq ? '<div class="turpill soft">Adım '+(seq.st.step+1)+' / '+seq.steps.length+'</div>' : '')+'<div class="done-badge">'+(done?(lastStep?"Hepsi tamam":"Tamamlandı"):"")+'</div></div></button>'+(IOS_TAP_SWITCH&&S.settings.vib?'<input type="checkbox" switch class="hsw" tabindex="-1" aria-hidden="true">':'')+'</div>'+
+      '<div class="tap-center"><div class="count">'+fmt(count)+'</div><div class="of">/ '+fmt(target)+'</div>'+(!seq && x.laps>0 ? '<div class="turpill">'+x.laps+'. tur</div>' : seq ? '<div class="turpill soft">Adım '+(seq.st.step+1)+' / '+seq.steps.length+'</div>' : '')+'<div class="done-badge">'+(done?(lastStep?"Hepsi tamam":"Tamamlandı"):"")+'</div></div></button>'+(IOS_TAP_SWITCH&&S.settings.vib?hswGrid():'')+'</div>'+
     (done && (S.mode==="diger"||S.mode==="serbest") ? siradakiKart() : '')+
     kasem+
     (!seq
@@ -2292,12 +2319,19 @@ function fsBar(z){
 function render(){
   renderTabs();
   requestAnimationFrame(()=>{ const on=document.querySelector(".steps .on"); if(on){ const p=on.parentElement; p.scrollLeft=on.offsetLeft-p.clientWidth/2+on.offsetWidth/2; } });
-  const html = ({takvim:viewTakvim, mubarek:viewMubarek, nafile:viewNafile, hatirlatici:viewHatirlatici, kaza:viewKaza, esma:viewEsma, sayac:viewSayac, vakitler:viewVakitler, dualar:viewDualar, hadisler:viewHadisler, rehber:viewRehber, kible:viewKible, tesbihler:viewTesbihler, zikirler:viewZikirler, istatistik:viewIstatistik}[tab])();
-  if(tab==="sayac") main.innerHTML = html;
-  else { const z=S.fs||1; main.innerHTML = fsBar(z)+'<div class="zoomwrap" style="zoom:'+z+'">'+html+'</div>'; }
+  main.innerHTML = viewHTML(tab);
+  scheduleNeighbors();
+}
+function viewHTML(t){
+  const prev=tab; tab=t;
+  try{
+  const html = ({takvim:viewTakvim, mubarek:viewMubarek, nafile:viewNafile, hatirlatici:viewHatirlatici, kaza:viewKaza, esma:viewEsma, sayac:viewSayac, vakitler:viewVakitler, dualar:viewDualar, hadisler:viewHadisler, rehber:viewRehber, kible:viewKible, tesbihler:viewTesbihler, zikirler:viewZikirler, istatistik:viewIstatistik}[t])();
+  if(t==="sayac") return html;
+  const z=S.fs||1; return fsBar(z)+'<div class="zoomwrap" style="zoom:'+z+'">'+html+'</div>';
+  } finally { tab=prev; }
 }
 main.addEventListener("click",e=>{
-  const viaSw = e.target.classList && e.target.classList.contains("hsw");
+  const viaSw = !!(e.target.closest && e.target.closest(".hswgrid"));
   const t = viaSw ? document.getElementById("tap") : (e.target.closest && e.target.closest("#tap")); if(!t) return;
   if(e.detail!==0 || viaSw){ const r=t.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2; if(e.clientX||e.clientY){ if(Math.hypot(e.clientX-cx,e.clientY-cy) > r.width/2) return; } }
   if(viaSw){ t.classList.add("pressed"); setTimeout(()=>t.classList.remove("pressed"),90); }
