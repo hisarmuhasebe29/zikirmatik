@@ -98,6 +98,10 @@ main{padding-block:16px calc(108px + env(safe-area-inset-bottom,0px))}
 .fsbar b{min-width:44px;text-align:center;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600}
 @media (min-width:960px){ .fsbar{max-width:640px;margin-inline:auto;margin-bottom:10px} }
 .iconbtn[aria-current="page"]{background:var(--band-fg);color:var(--band-a)}
+.qbtn .off{display:none}.qbtn[aria-pressed="false"] .on{display:none}.qbtn[aria-pressed="false"] .off{display:block}
+.qbtn[aria-pressed="false"]{opacity:.6;background:transparent}
+.qbtn.pop svg{animation:qpop .3s ease-out}@keyframes qpop{40%{transform:scale(1.25)}}
+@media (max-width:360px){ .iconbtn{width:30px;height:30px} .hbtns{gap:3px} }
 .band-info .hicri{display:flex;flex-direction:column;gap:1px;line-height:1.3}
 .band-info .miladi{color:var(--band-fg);font-weight:600}
 .esgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
@@ -504,7 +508,14 @@ nav.tabs .in{max-width:640px;margin:0 auto;display:grid;grid-template-columns:re
 nav.tabs button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;padding:6px 0;font-size:10.5px;line-height:1.15;text-align:center;font-weight:600;color:var(--muted);border-radius:10px}
 nav.tabs button svg{width:21px;height:21px;flex:none}
 nav.tabs button span{max-width:9ch;text-wrap:balance}
-nav.tabs button[aria-current="page"]{color:var(--cobalt)}
+nav.tabs .in{position:relative}
+nav.tabs button{position:relative;z-index:1;transition:color .2s}
+nav.tabs button svg{transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+nav.tabs button[aria-current="page"]{color:var(--cobalt);font-weight:800}
+nav.tabs button[aria-current="page"] svg{transform:translateY(-1px) scale(1.12)}
+.tabpill{position:absolute;left:0;top:0;bottom:0;width:calc(100%/6);pointer-events:none;z-index:0;opacity:0}
+.tabpill::before{content:"";position:absolute;inset:2px 4px;border-radius:12px;background:var(--cobalt);opacity:.16}
+.tabpill::after{content:"";position:absolute;top:2px;left:50%;width:26px;height:3px;margin-left:-13px;border-radius:0 0 3px 3px;background:var(--cobalt)}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:13.5px;font-weight:600;z-index:40;max-width:calc(100% - 32px);text-align:center}
 
 /* Renk temaları (Ayarlar > Tema). data-renk yoksa mavi İznik teması geçerlidir. */
@@ -567,6 +578,8 @@ nav.tabs button[aria-current="page"]{color:var(--cobalt)}
     <div class="bar-top">
       <div class="brand"><h1>Zikirmatik</h1><span>ذِكْر</span></div>
       <div class="hbtns">
+        <button class="iconbtn qbtn" id="qSes" aria-label="Ses" aria-pressed="true"><svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg><svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>
+        <button class="iconbtn qbtn" id="qVib" aria-label="Titreşim" aria-pressed="true"><svg class="on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M5 8.5v7M2.5 10v4M19 8.5v7M21.5 10v4"/></svg><svg class="off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4 4l16 16"/></svg></button>
         <button class="iconbtn" id="openKible" aria-label="Kıble"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 5.5l2.6 6.5L12 18.5 9.4 12z"/></svg></button>
         <button class="iconbtn esmabtn" id="openEsma" aria-label="Esmâü'l-Hüsnâ"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="5" y="5" width="14" height="14" rx="1.2"/><rect x="5" y="5" width="14" height="14" rx="1.2" transform="rotate(45 12 12)"/></g><text x="12" y="15.3" text-anchor="middle" font-size="9" font-weight="800" fill="currentColor" font-family="Bricolage Grotesque,system-ui,sans-serif" letter-spacing="-.3">99</text></svg></button>
         <button class="iconbtn" id="openMenu" aria-label="Menü" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -939,11 +952,22 @@ const VIEWS = ["sayac","vakitler","dualar","hadisler","rehber","kible","esma","t
 let tab = (location.hash||"").replace("#","");
 if(!VIEWS.includes(tab)) tab = "sayac";
 const MENU_TABS=["istatistik","takvim","mubarek","nafile","hatirlatici","kaza"];
-function markHead(){ [["openKible",["kible"]],["openEsma",["esma"]],["openMenu",MENU_TABS]].forEach(([id,t])=>{ const b=document.getElementById(id); if(b) b.setAttribute("aria-current", t.includes(tab)?"page":"false"); }); }
+function updateQuick(){ const a=document.getElementById("qSes"), b=document.getElementById("qVib");
+  if(a){ const on=!!(S.settings.sound||S.settings.tapSound); a.setAttribute("aria-pressed",on); a.setAttribute("aria-label",on?"Sesi kapat":"Sesi aç"); }
+  if(b){ const on=!!S.settings.vib; b.setAttribute("aria-pressed",on); b.setAttribute("aria-label",on?"Titreşimi kapat":"Titreşimi aç"); } }
+function markHead(){ updateQuick(); [["openKible",["kible"]],["openEsma",["esma"]],["openMenu",MENU_TABS]].forEach(([id,t])=>{ const b=document.getElementById(id); if(b) b.setAttribute("aria-current", t.includes(tab)?"page":"false"); }); }
 function renderTabs(){ markHead();
-  const active = tab==="zikirler" ? "sayac" : tab;
-  document.getElementById("tabs").innerHTML = TABS.map(([k,l])=>'<button data-tab="'+k+'"'+(k===active?' aria-current="page"':'')+'>'+I[k]+'<span>'+l+'</span></button>').join("");
+  const active = tab==="zikirler" ? "sayac" : tab, host=document.getElementById("tabs");
+  if(!host.querySelector(".tabpill")) host.innerHTML = '<i class="tabpill" aria-hidden="true"></i>'+TABS.map(([k,l])=>'<button data-tab="'+k+'">'+I[k]+'<span>'+l+'</span></button>').join("");
+  host.querySelectorAll("[data-tab]").forEach(b=>{ if(b.dataset.tab===active) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  tabPillAt(TABS.findIndex(x=>x[0]===active), true);
 }
+/* Alttaki seçili sekmenin arkasındaki renkli kutu; kaydırırken parmakla birlikte kayar */
+function tabPillAt(f, anim){ const pl=document.querySelector("#tabs .tabpill"); if(!pl) return;
+  if(f<0){ pl.style.opacity="0"; return; }
+  f=Math.max(0,Math.min(TABS.length-1,f)); pl.style.opacity="1";
+  pl.style.transition=anim?"transform .32s cubic-bezier(.25,.9,.3,1), opacity .2s":"none";
+  pl.style.transform="translateX("+(f*100)+"%)"; }
 document.getElementById("tabs").addEventListener("click",e=>{ const b=e.target.closest("[data-tab]"); if(b) go(b.dataset.tab); });
 function go(t){ if(typeof stopPlay==="function" && t!=="dualar") stopPlay(); tab=t; try{ history.replaceState(null,"","#"+t); }catch(e){} stopCompass(); confirmReset=false; render(); window.scrollTo(0,0);
   }
@@ -965,7 +989,8 @@ function scheduleNeighbors(){ if(swiping) return; clearTimeout(nbTimer); dropPee
   const hScroll=el=>{ for(let n=el; n && n!==m; n=n.parentElement){ if(n.scrollWidth>n.clientWidth+4){ const ox=getComputedStyle(n).overflowX; if(ox==="auto"||ox==="scroll") return true; } } return false; };
   const setX=(x,ms)=>{ const tr=ms?"transform "+ms+"ms "+EASE+", opacity "+ms+"ms "+EASE:"none";
     m.style.transition=tr; m.style.transform=x?"translate3d("+x+"px,0,0)":""; m.style.opacity=peek?String(1-Math.min(1,Math.abs(x)/W)*0.25):"";
-    if(peek){ peek.style.transition=tr; peek.style.transform="translate3d("+(x+pdir*W)+"px,0,0)"; } };
+    if(peek){ peek.style.transition=tr; peek.style.transform="translate3d("+(x+pdir*W)+"px,0,0)"; }
+    tabPillAt(nbIdx() - (peek?x/W:0), !!ms); };
   const usePeek=dir=>{
     if(peek){ peek.classList.remove("on"); peek.style.transition="none"; peek.style.transform="translate3d("+(pdir*200)+"vw,0,0)"; }
     peek=null; pdir=0;
@@ -1074,7 +1099,7 @@ function hicri(date,tz){
   try{ const p=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{timeZone:tz,day:"numeric",month:"numeric",year:"numeric"}).formatToParts(date); const g=t=>parseInt(p.find(x=>x.type===t).value,10);
     const y=g("year"), m=g("month"), d=g("day"); if(!(m>=1&&m<=12)) return ""; return d+" "+HICRI_AY[m-1]+" "+y; }catch(e){ return ""; }
 }
-const APP_VER="v.17";
+const APP_VER="v.18";
 const RENKLER=[["mavi","İznik mavisi","#1E52AE","#0F3478"],["yesil","Ravza yeşili","#147A5C","#0A4936"],["turkuaz","Çini turkuazı","#0C8590","#064D55"],["bordo","Osmanlı bordosu","#8C2236","#56111F"],["gece","Gece ve altın","#1C2B50","#E2BC5E"],["mor","Lavanta","#5A45A6","#34266B"],["safir","Safir","#2C3794","#161D5C"],["zeytin","Zeytin dalı","#5E6E2A","#384216"],["kahve","Türk kahvesi","#6B4027","#3F2414"],["gul","Gül kurusu","#A85A72","#6E3044"],["safak","Şafak","#C0601F","#7C3210"],["antrasit","Antrasit","#363B43","#1C1F24"],["gumus","Gümüş","#C4CAD3","#5B6573"],["siyahbeyaz","Siyah beyaz","#111111","#FFFFFF"]];
 function applyTheme(){
   const r=document.documentElement;
@@ -2286,6 +2311,10 @@ function openMenu(){
     '</div><p class="appver">Zikirmatik · Sürüm '+APP_VER+'</p><button class="btn" id="closeSettings" style="margin-top:6px">Kapat</button></div></div>';
 }
 document.getElementById("openMenu").addEventListener("click",openMenu);
+["qSes","qVib"].forEach(id=>document.getElementById(id).addEventListener("click",e=>{ const btn=e.currentTarget; ac();
+  if(id==="qSes"){ const on=!(S.settings.sound||S.settings.tapSound); S.settings.sound=S.settings.tapSound=on; save(); if(on) bell(); toast(on?"Ses açık":"Ses kapalı"); }
+  else { const on=!S.settings.vib; S.settings.vib=on; save(); if(on) vibrate(40); toast(on?"Titreşim açık":"Titreşim kapalı"); if(tab==="sayac") render(); }
+  updateQuick(); btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop"); }));
 /* Hızlı sayarken liste açılırsa, parmağın devam eden dokunuşları yanlışlıkla bir seçim yapmasın */
 document.getElementById("sheetHost").addEventListener("click",e=>{ if(Date.now()-nextOpenedAt<800 && e.target.closest && e.target.closest(".sheet.center")){ e.stopImmediatePropagation(); e.preventDefault(); } },true);
 new MutationObserver(()=>{ const sh=document.getElementById("sheetHost"); document.documentElement.classList.toggle("sheet-open", !!sh.firstElementChild); const sw=sh.querySelector(".sheet"); if(sw) sw.scrollTop=0; }).observe(document.getElementById("sheetHost"),{childList:true});
@@ -2324,6 +2353,7 @@ document.getElementById("sheetHost").addEventListener("click",async e=>{
 document.getElementById("sheetHost").addEventListener("click",e=>{ if(e.target.id==="sheet"||e.target.id==="closeSettings") document.getElementById("sheetHost").innerHTML="";
   if(e.target.id==="vibTry" && e.target.tagName==="BUTTON"){ try{ const r=navigator.vibrate && navigator.vibrate([200,100,200]); if(r===false) toast("Telefon titreşime izin vermedi"); }catch(err){ toast("Titreşim desteklenmiyor"); } } });
 document.getElementById("sheetHost").addEventListener("change",e=>{ const k=e.target.dataset.set; if(!k) return;
+  setTimeout(updateQuick,0);
   if(k==="sesAll"){ S.settings.sound=S.settings.tapSound=e.target.checked; save(); if(e.target.checked) bell(); toast(e.target.checked?"Sesler açık":"Sesler kapalı"); return; } S.settings[k]=e.target.checked; save(); if(k==="wake") applyWake(); if(k==="vib"){ if(e.target.checked) vibrate([60,60,60]); if(tab==="sayac") render(); } if(k==="sound"&&e.target.checked) bell(); });
 
 /* ================= ÇİZİM VE OLAYLAR ================= */
