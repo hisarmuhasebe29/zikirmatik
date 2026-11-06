@@ -234,8 +234,20 @@ p{margin:0}
 .steps span{font-size:12px;padding:4px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
 .steps span.on{background:var(--cobalt-soft);color:var(--cobalt);border-color:transparent;font-weight:600}
 .steps span.done{color:var(--turq)}
-.ringwrap{display:grid;place-items:center}
-.tap{position:relative;width:clamp(260px,min(88vw,calc(100svh - 400px)),440px);aspect-ratio:1;max-width:100%;border:0;background:transparent;padding:0;border-radius:50%;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.ringwrap{display:grid;place-items:center;--tapsz:clamp(260px,min(88vw,calc(100svh - 400px)),440px)}
+.ringwrap>*{grid-area:1/1}
+.hsw{width:min(var(--tapsz),100%);aspect-ratio:1;height:auto;margin:0;opacity:.004;border-radius:50%;clip-path:circle(50%);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;outline:none;z-index:2}
+.tap.pressed{transform:scale(.97)}
+#main.sl-l{animation:slL .22s ease-out}#main.sl-r{animation:slR .22s ease-out}
+@keyframes slL{from{transform:translateX(36px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes slR{from{transform:translateX(-36px);opacity:.4}to{transform:none;opacity:1}}
+#main.dragging{transition:none}
+#main.snap{transition:transform .18s ease-out}
+.vibtest{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;background:var(--bead-off);margin:4px 0 10px}
+.vibtest input{transform:scale(1.25);margin-right:6px}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.quick .toggle{margin:0;padding:10px 12px;border:1px solid var(--line);border-radius:14px;gap:8px}
+.tap{position:relative;width:var(--tapsz);transition:transform .08s;aspect-ratio:1;max-width:100%;border:0;background:transparent;padding:0;border-radius:50%;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 .tap svg{width:100%;height:100%;display:block}
 .tap-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
 .count{font-size:clamp(68px,22vw,110px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em;color:var(--ink)}
@@ -823,13 +835,27 @@ const fmt = n => n.toLocaleString("tr-TR");
 const duaById = id => DUALAR.find(d=>d.id===id);
 
 /* ================= GERİ BİLDİRİM ================= */
-const HAS_VIB = typeof navigator.vibrate==="function" && !/iPhone|iPad|iPod/.test(navigator.userAgent);
-function haptic1(){ try{ const l=document.createElement("label"); l.setAttribute("aria-hidden","true"); l.style.display="none"; const i=document.createElement("input"); i.type="checkbox"; i.setAttribute("switch",""); l.appendChild(i); document.head.appendChild(l); l.click(); document.head.removeChild(l); }catch(e){} }
+const IS_IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints>1);
+const IOS_VER = (()=>{ const m=navigator.userAgent.match(/OS (\d+)[_.](\d+)/); return m ? (+m[1])+"."+(+m[2]) : ""; })();
+const HAS_VIB = typeof navigator.vibrate==="function" && !IS_IOS;
+/* iPhone: Apple, iOS 26.5 ile kodla tetiklenen titreşimi kapattı. Ama kullanıcının parmağıyla
+   değiştirdiği gerçek bir "switch" anahtarı hâlâ dokunuş hissi veriyor. Bu yüzden sayaç dairesinin
+   üstüne görünmez bir anahtar koyuyoruz: parmak doğrudan ona değiyor. */
+const IOS_TAP_SWITCH = IS_IOS;
+let nativeHap=false;
+function haptic1(){ try{ const l=document.createElement("label"); l.setAttribute("aria-hidden","true"); l.style.cssText="position:fixed;left:-99px;top:0;width:1px;height:1px;overflow:hidden;opacity:0"; const i=document.createElement("input"); i.type="checkbox"; i.setAttribute("switch",""); l.appendChild(i); document.body.appendChild(l); l.click(); document.body.removeChild(l); }catch(e){} }
 function haptic(n){ haptic1(); for(let k=1;k<n;k++) setTimeout(haptic1, k*120); }
 function vibrate(p){
   if(!S.settings.vib) return;
   try{ if(HAS_VIB){ navigator.vibrate(p); return; } }catch(e){}
+  if(!IS_IOS) return;
+  if(nativeHap && !Array.isArray(p)) return; /* parmak zaten anahtara dokundu */
   const n = Array.isArray(p) ? Math.ceil(p.length/2) : 1; haptic(Math.min(n,4));
+}
+function vibInfo(){
+  if(HAS_VIB) return {ok:true, t:"Bu telefon titreşimi destekliyor. Titreşim hissetmiyorsanız telefonun titreşim/dokunuş ayarını açın ve uygulamayı ana ekrandaki simgeden açın (önizleme penceresinde titreşim çalışmaz)."};
+  if(IS_IOS) return {ok:true, ios:true, t:"iPhone"+(IOS_VER?" · iOS "+IOS_VER:"")+": Apple, web uygulamalarında titreşimi yalnızca parmağınızın dokunduğu anahtardan verir. Deneme anahtarını açıp kapatın; tık hissederseniz sayaçta da hissedersiniz. Hissetmezseniz Ayarlar › Ses ve Dokunuş › Sistem Dokunuşları'nı açın."+(IOS_VER && parseFloat(IOS_VER)<17.4?" Bu iOS sürümü web titreşimini desteklemiyor; iOS güncellemesi gerekir.":"")};
+  return {ok:false, t:"Bu tarayıcı titreşimi desteklemiyor."};
 }
 
 let AC = null;
@@ -912,7 +938,39 @@ function renderTabs(){ markHead();
   document.getElementById("tabs").innerHTML = TABS.map(([k,l])=>'<button data-tab="'+k+'"'+(k===active?' aria-current="page"':'')+'>'+I[k]+'<span>'+l+'</span></button>').join("");
 }
 document.getElementById("tabs").addEventListener("click",e=>{ const b=e.target.closest("[data-tab]"); if(b) go(b.dataset.tab); });
-function go(t){ if(typeof stopPlay==="function" && t!=="dualar") stopPlay(); tab=t; try{ history.replaceState(null,"","#"+t); }catch(e){} stopCompass(); confirmReset=false; render(); window.scrollTo(0,0); }
+let swipeDir=0;
+function go(t){ if(typeof stopPlay==="function" && t!=="dualar") stopPlay(); tab=t; try{ history.replaceState(null,"","#"+t); }catch(e){} stopCompass(); confirmReset=false; render(); window.scrollTo(0,0);
+  if(swipeDir){ const m=document.getElementById("main"); m.classList.remove("sl-l","sl-r","snap"); m.style.transform=""; void m.offsetWidth; m.classList.add(swipeDir>0?"sl-l":"sl-r"); setTimeout(()=>m.classList.remove("sl-l","sl-r"),260); swipeDir=0; } }
+/* Instagram gibi: ana ekranda sağa/sola kaydırarak alt sekmeler arasında geçiş */
+(function(){
+  const m=document.getElementById("main"); let sx=0, sy=0, st=0, lock=0, ok=false;
+  const SKIP=".tap,.hsw,.subnav,.steps,.tablewrap,.speed,.duagrid,input,textarea,select,[data-noswipe],.compass,audio";
+  const idx=()=>{ const a=tab==="zikirler"?"sayac":tab; return TABS.findIndex(x=>x[0]===a); };
+  const hScroll=el=>{ for(let n=el; n && n!==m; n=n.parentElement){ if(n.scrollWidth>n.clientWidth+4){ const ox=getComputedStyle(n).overflowX; if(ox==="auto"||ox==="scroll") return true; } } return false; };
+  m.addEventListener("touchstart",e=>{
+    ok=false; lock=0;
+    if(e.touches.length!==1 || document.getElementById("sheetHost").firstElementChild || idx()<0) return;
+    const t=e.target; if(t.closest && t.closest(SKIP)) return; if(hScroll(t)) return;
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY; st=Date.now(); ok=true;
+  },{passive:true});
+  m.addEventListener("touchmove",e=>{
+    if(!ok) return; const dx=e.touches[0].clientX-sx, dy=e.touches[0].clientY-sy;
+    if(!lock){ if(Math.abs(dx)>12 && Math.abs(dx)>Math.abs(dy)*1.4) lock=1; else if(Math.abs(dy)>12) { lock=-1; ok=false; return; } else return; }
+    if(lock===1){ const i=idx(), edge=(dx>0&&i===0)||(dx<0&&i===TABS.length-1); m.classList.add("dragging"); m.style.transform="translateX("+(edge?dx*.15:dx*.45)+"px)"; }
+  },{passive:true});
+  const end=e=>{
+    if(!ok){ return; } ok=false; m.classList.remove("dragging");
+    const tt=(e.changedTouches&&e.changedTouches[0])||{clientX:sx,clientY:sy};
+    const dx=tt.clientX-sx, dy=tt.clientY-sy, dt=Date.now()-st, i=idx();
+    const fast = dt<300 && Math.abs(dx)>40;
+    if(lock===1 && (Math.abs(dx)>70 || fast) && Math.abs(dx)>Math.abs(dy)*1.4){
+      const j = dx<0 ? i+1 : i-1;
+      if(j>=0 && j<TABS.length){ swipeDir = dx<0?1:-1; m.style.transform=""; vibrate(8); go(TABS[j][0]); if(!S.swipeIpucu){ S.swipeIpucu=1; save(); } return; }
+    }
+    if(m.style.transform){ m.classList.add("snap"); m.style.transform=""; setTimeout(()=>m.classList.remove("snap"),200); }
+  };
+  m.addEventListener("touchend",end,{passive:true}); m.addEventListener("touchcancel",end,{passive:true});
+})();
 
 /* ================= NAMAZ VAKİTLERİ (Diyanet yöntemi) ================= */
 const DR=Math.PI/180, sn=d=>Math.sin(d*DR), cs=d=>Math.cos(d*DR), tn=d=>Math.tan(d*DR), asn=x=>Math.asin(x)/DR, acs=x=>Math.acos(Math.max(-1,Math.min(1,x)))/DR, at2=(y,x)=>Math.atan2(y,x)/DR, acot=x=>Math.atan(1/x)/DR;
@@ -973,7 +1031,7 @@ function hicri(date,tz){
   try{ const p=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{timeZone:tz,day:"numeric",month:"numeric",year:"numeric"}).formatToParts(date); const g=t=>parseInt(p.find(x=>x.type===t).value,10);
     const y=g("year"), m=g("month"), d=g("day"); if(!(m>=1&&m<=12)) return ""; return d+" "+HICRI_AY[m-1]+" "+y; }catch(e){ return ""; }
 }
-const APP_VER="v.14";
+const APP_VER="v.15";
 const RENKLER=[["mavi","İznik mavisi","#1E52AE","#0F3478"],["yesil","Ravza yeşili","#147A5C","#0A4936"],["turkuaz","Çini turkuazı","#0C8590","#064D55"],["bordo","Osmanlı bordosu","#8C2236","#56111F"],["gece","Gece ve altın","#1C2B50","#E2BC5E"],["mor","Lavanta","#5A45A6","#34266B"],["safir","Safir","#2C3794","#161D5C"],["zeytin","Zeytin dalı","#5E6E2A","#384216"],["kahve","Türk kahvesi","#6B4027","#3F2414"],["gul","Gül kurusu","#A85A72","#6E3044"],["safak","Şafak","#C0601F","#7C3210"],["antrasit","Antrasit","#363B43","#1C1F24"],["gumus","Gümüş","#C4CAD3","#5B6573"],["siyahbeyaz","Siyah beyaz","#111111","#FFFFFF"]];
 function applyTheme(){
   const r=document.documentElement;
@@ -1063,7 +1121,7 @@ function viewSayac(){
     '<div class="zikir-head">'+(src?'<div class="src">'+esc(src)+'</div>':'')+'<div class="ar'+(longAr?' long':'')+'" lang="ar">'+esc(z.ar||"")+'</div><div class="tr">'+esc(z.ok&&z.tr.includes("…")?z.ok:z.tr)+'</div>'+(z.ok&&!z.tr.includes("…")?'<div class="mn" style="font-style:italic">'+esc(z.ok)+'</div>':'')+'<div class="mn">'+esc(z.mn||"")+'</div>'+
       (S.mode==="serbest"?'<button class="change" data-go="zikirler">Zikri değiştir</button>':S.mode==="diger"?'<button class="change" data-go="tesbihler">Tesbihi değiştir</button>':'')+'</div>'+
     '<div class="ringwrap"><button class="tap" id="tap" aria-label="Say. Şu an '+count+' / '+target+'">'+ringSVG(count,target)+
-      '<div class="tap-center"><div class="count">'+fmt(count)+'</div><div class="of">/ '+fmt(target)+'</div>'+(!seq && x.laps>0 ? '<div class="turpill">'+x.laps+'. tur</div>' : seq ? '<div class="turpill soft">Adım '+(seq.st.step+1)+' / '+seq.steps.length+'</div>' : '')+'<div class="done-badge">'+(done?(lastStep?"Hepsi tamam":"Tamamlandı"):"")+'</div></div></button></div>'+
+      '<div class="tap-center"><div class="count">'+fmt(count)+'</div><div class="of">/ '+fmt(target)+'</div>'+(!seq && x.laps>0 ? '<div class="turpill">'+x.laps+'. tur</div>' : seq ? '<div class="turpill soft">Adım '+(seq.st.step+1)+' / '+seq.steps.length+'</div>' : '')+'<div class="done-badge">'+(done?(lastStep?"Hepsi tamam":"Tamamlandı"):"")+'</div></div></button>'+(IOS_TAP_SWITCH&&S.settings.vib?'<input type="checkbox" switch class="hsw" tabindex="-1" aria-hidden="true">':'')+'</div>'+
     (done && (S.mode==="diger"||S.mode==="serbest") ? siradakiKart() : '')+
     kasem+
     (!seq
@@ -2136,13 +2194,16 @@ function viewIstatistik(){
 }
 
 /* ================= AYARLAR ================= */
+function vibBox(){ const v=vibInfo();
+  return '<p class="note" id="vibNote">'+esc(v.t)+'</p>'+(v.ok?'<div class="vibtest"><span><b>Titreşimi dene</b><br><small>'+(v.ios?'Anahtarı parmağınızla açıp kapatın':'Dokununca telefon titremeli')+'</small></span>'+(v.ios?'<input type="checkbox" switch id="vibTry" aria-label="Titreşim deneme anahtarı">':'<button class="btn" id="vibTry">Dene</button>')+'</div>':''); }
 function openSettings(){
-  const T=(k,t,s)=>'<div class="toggle"><label for="set_'+k+'">'+t+'<small>'+s+'</small></label><input type="checkbox" class="switch" id="set_'+k+'" data-set="'+k+'"'+(S.settings[k]?' checked':'')+'></div>';
+  const T=(k,t,s)=>'<div class="toggle"><label for="set_'+k+'">'+t+'<small>'+s+'</small></label><input type="checkbox" class="switch" id="set_'+k+'" data-set="'+k+'" switch'+(S.settings[k]?' checked':'')+'></div>';
   document.getElementById("sheetHost").innerHTML='<div class="sheet" id="sheet"><div class="panel" role="dialog" aria-label="Profilim"><h2>Profilim</h2>'+
-    T("vib","Titreşim","Her dokunuşta kısa, hedefte uzun titreşir. iPhone tarayıcıları titreşimi desteklemez.")+
     T("sound","Hedef sesi","Hedef dolunca zil sesi çalar.")+
-    T("every33","33'te uyarı","Büyük hedeflerde her 33'te bir hafif uyarı verir.")+
     T("tapSound","Tık sesi","Her dokunuşta hafif bir tık sesi.")+
+    T("vib","Titreşim","Her dokunuşta kısa, hedefte uzun titreşir.")+
+    vibBox()+
+    T("every33","33'te uyarı","Büyük hedeflerde her 33'te bir hafif uyarı verir.")+
     T("wake","Ekran açık kalsın","Zikir çekerken ekran kararmaz.")+
     '<div class="sec-h">Adınız</div><div class="namefield"><input id="adInput" maxlength="30" placeholder="Örn. Ahmet" value="'+esc(S.ad||"")+'"><button class="btn primary" id="adKaydet" style="padding:10px 16px">Kaydet</button></div>'+
     '<p class="note">Üst bantta sizi adınızla selamlar. Ad yalnızca bu telefonda saklanır.</p>'+
@@ -2162,7 +2223,10 @@ function openMenu(){
   const it=(id,icon,t,sub,cur)=>'<button class="mitem" id="'+id+'"'+(cur?' aria-current="page"':'')+'><span class="mic">'+icon+'</span><span class="mtx"><b>'+t+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</span>'+I.chevR+'</button>';
   const ic=d=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true">'+d+'</svg>';
   const RN=(RENKLER.find(r=>r[0]===S.renk)||RENKLER[0])[1];
-  document.getElementById("sheetHost").innerHTML='<div class="sheet" id="sheet"><div class="panel" role="dialog" aria-label="Menü"><h2>Menü</h2><div class="mlist">'+
+  document.getElementById("sheetHost").innerHTML='<div class="sheet" id="sheet"><div class="panel" role="dialog" aria-label="Menü"><h2>Menü</h2><div class="quick">'+
+    '<div class="toggle"><label for="q_ses">Ses<small>Zil ve tık</small></label><input type="checkbox" class="switch" switch id="q_ses" data-set="sesAll"'+(S.settings.sound||S.settings.tapSound?' checked':'')+'></div>'+
+    '<div class="toggle"><label for="q_vib">Titreşim<small>'+(HAS_VIB||IS_IOS?'Dokunuşta':'Desteklenmiyor')+'</small></label><input type="checkbox" class="switch" switch id="q_vib" data-set="vib"'+(S.settings.vib?' checked':'')+'></div>'+
+    '</div><div class="mlist">'+
     it("mHome",ic('<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>'),"Ana sayfa","Sayaç ekranına dön",tab==="sayac")+
     it("mStats",ic('<path d="M5 20V12M10 20V6M15 20v-9M20 20V9"/>'),"İstatistik","Bugün, son 7 gün ve toplamlar",tab==="istatistik")+
     it("mTheme",ic('<path d="M12 21a9 9 0 1 1 0-18c4.97 0 9 3.58 9 8 0 2.76-2.24 4-4.5 4H15a2 2 0 0 0-1.4 3.4c.4.4.6.9.6 1.4 0 .7-.6 1.2-1.2 1.2z"/><circle cx="7.5" cy="10.5" r="1.2"/><circle cx="12" cy="7.5" r="1.2"/><circle cx="16.5" cy="10.5" r="1.2"/>'),"Tema",RN)+
@@ -2211,8 +2275,10 @@ document.getElementById("sheetHost").addEventListener("click",async e=>{
   if(b.id==="yedekEvet"){ const d=onay._data; S=Object.assign(defaults(),d); S.settings=Object.assign(defaults().settings,d.settings||{}); save(); applyTheme(); document.documentElement.style.setProperty("--ar-scale",S.arScale||1); render(); updateBand(); document.getElementById("sheetHost").innerHTML=""; toast("Yedek yüklendi"); return; }
 });
 
-document.getElementById("sheetHost").addEventListener("click",e=>{ if(e.target.id==="sheet"||e.target.id==="closeSettings") document.getElementById("sheetHost").innerHTML=""; });
-document.getElementById("sheetHost").addEventListener("change",e=>{ const k=e.target.dataset.set; if(!k) return; S.settings[k]=e.target.checked; save(); if(k==="wake") applyWake(); if(k==="vib"&&e.target.checked) vibrate(40); if(k==="sound"&&e.target.checked) bell(); });
+document.getElementById("sheetHost").addEventListener("click",e=>{ if(e.target.id==="sheet"||e.target.id==="closeSettings") document.getElementById("sheetHost").innerHTML="";
+  if(e.target.id==="vibTry" && e.target.tagName==="BUTTON"){ try{ const r=navigator.vibrate && navigator.vibrate([200,100,200]); if(r===false) toast("Telefon titreşime izin vermedi"); }catch(err){ toast("Titreşim desteklenmiyor"); } } });
+document.getElementById("sheetHost").addEventListener("change",e=>{ const k=e.target.dataset.set; if(!k) return;
+  if(k==="sesAll"){ S.settings.sound=S.settings.tapSound=e.target.checked; save(); if(e.target.checked) bell(); toast(e.target.checked?"Sesler açık":"Sesler kapalı"); return; } S.settings[k]=e.target.checked; save(); if(k==="wake") applyWake(); if(k==="vib"){ if(e.target.checked) vibrate([60,60,60]); if(tab==="sayac") render(); } if(k==="sound"&&e.target.checked) bell(); });
 
 /* ================= ÇİZİM VE OLAYLAR ================= */
 const main=document.getElementById("main");
@@ -2231,9 +2297,11 @@ function render(){
   else { const z=S.fs||1; main.innerHTML = fsBar(z)+'<div class="zoomwrap" style="zoom:'+z+'">'+html+'</div>'; }
 }
 main.addEventListener("click",e=>{
-  const t=e.target.closest && e.target.closest("#tap"); if(!t) return;
-  if(e.detail!==0){ const r=t.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2; if(Math.hypot(e.clientX-cx,e.clientY-cy) > r.width/2) return; }
-  doTap();
+  const viaSw = e.target.classList && e.target.classList.contains("hsw");
+  const t = viaSw ? document.getElementById("tap") : (e.target.closest && e.target.closest("#tap")); if(!t) return;
+  if(e.detail!==0 || viaSw){ const r=t.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2; if(e.clientX||e.clientY){ if(Math.hypot(e.clientX-cx,e.clientY-cy) > r.width/2) return; } }
+  if(viaSw){ t.classList.add("pressed"); setTimeout(()=>t.classList.remove("pressed"),90); }
+  nativeHap = viaSw; try{ doTap(); } finally { nativeHap=false; }
   if(e.detail===0) setTimeout(()=>{ const n=document.getElementById("tap"); n&&n.focus(); },0);
 });
 function openHadis(i){
@@ -2314,6 +2382,7 @@ if(!S.mig13){ S.mig13=1; if(S.targets && S.targets.t_fetih!==100){ S.targets.t_f
 tesGunKontrol(); setInterval(()=>{ const g=S.tesGun; tesGunKontrol(); if(g!==S.tesGun && (tab==="tesbihler"||tab==="sayac")) render(); },60000);
 applyTheme(); render(); updateBand(); applyWake();
 if("serviceWorker" in navigator) window.addEventListener("load",()=>{ navigator.serviceWorker.register("sw.js").catch(()=>{}); });
+if(!S.swipeIpucu && ("ontouchstart" in window)) setTimeout(()=>{ if(!S.swipeIpucu){ toast("İpucu: Ekranı sağa-sola kaydırarak sekmeler arasında geçebilirsiniz"); S.swipeIpucu=1; save(); } },1500);
 if(S.lastVer && S.lastVer!==APP_VER) setTimeout(()=>toast("Uygulama "+APP_VER+" sürümüne güncellendi"),900);
 if(S.lastVer!==APP_VER){ S.lastVer=APP_VER; save(); }
 })();
