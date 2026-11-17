@@ -865,8 +865,18 @@ function hswGrid(){ const {w,h}=hswSize(), D=440, cols=Math.ceil((D+2*w)/w), row
   return '<div class="hswgrid" aria-hidden="true"><div class="hswin" style="left:-'+w+'px;top:-'+h+'px;width:'+(cols*w)+'px">'+'<input type="checkbox" switch class="hsw" tabindex="-1">'.repeat(cols*rows)+'</div></div>'; }
 function haptic1(){ try{ const l=document.createElement("label"); l.setAttribute("aria-hidden","true"); l.style.cssText="position:fixed;left:-99px;top:0;width:1px;height:1px;overflow:hidden;opacity:0"; const i=document.createElement("input"); i.type="checkbox"; i.setAttribute("switch",""); l.appendChild(i); document.body.appendChild(l); l.click(); document.body.removeChild(l); }catch(e){} }
 function haptic(n){ haptic1(); for(let k=1;k<n;k++) setTimeout(haptic1, k*120); }
+/* Ekrana bakmadan hissedilsin diye özel titreşim desenleri */
+const VIB_BITTI=[500,150,500,150,500,200,1200]; /* tesbih bitti: 3 güçlü + uzun (~3 sn) */
+const VIB_GECIS=[350,150,350];                  /* sıradaki adıma geçiş: 2 güçlü */
+const VIB_YUZ=[400,150,400,150,400];            /* 1461'de her 100: 3 güçlü */
+let vibLockUntil=0, hapPauseUntil=0;
+function milestone(p){ vibrate(p); hapPauseUntil=Date.now()+1300; if(IS_IOS) setTimeout(()=>{ if(tab==="sayac") render(); },1350); }
 function vibrate(p){
   if(!S.settings.vib) return;
+  const arr=Array.isArray(p), now=Date.now();
+  /* Uzun desen çalarken sonraki dokunuşların kısa titreşimi onu kesmesin */
+  if(!arr && now<vibLockUntil) return;
+  if(arr) vibLockUntil=now+p.reduce((a,b)=>a+b,0);
   try{ if(HAS_VIB){ navigator.vibrate(p); return; } }catch(e){}
   if(!IS_IOS) return;
   if(nativeHap && !Array.isArray(p)) return; /* parmak zaten anahtara dokundu */
@@ -1099,7 +1109,7 @@ function hicri(date,tz){
   try{ const p=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura",{timeZone:tz,day:"numeric",month:"numeric",year:"numeric"}).formatToParts(date); const g=t=>parseInt(p.find(x=>x.type===t).value,10);
     const y=g("year"), m=g("month"), d=g("day"); if(!(m>=1&&m<=12)) return ""; return d+" "+HICRI_AY[m-1]+" "+y; }catch(e){ return ""; }
 }
-const APP_VER="v.18";
+const APP_VER="v.19";
 const RENKLER=[["mavi","İznik mavisi","#1E52AE","#0F3478"],["yesil","Ravza yeşili","#147A5C","#0A4936"],["turkuaz","Çini turkuazı","#0C8590","#064D55"],["bordo","Osmanlı bordosu","#8C2236","#56111F"],["gece","Gece ve altın","#1C2B50","#E2BC5E"],["mor","Lavanta","#5A45A6","#34266B"],["safir","Safir","#2C3794","#161D5C"],["zeytin","Zeytin dalı","#5E6E2A","#384216"],["kahve","Türk kahvesi","#6B4027","#3F2414"],["gul","Gül kurusu","#A85A72","#6E3044"],["safak","Şafak","#C0601F","#7C3210"],["antrasit","Antrasit","#363B43","#1C1F24"],["gumus","Gümüş","#C4CAD3","#5B6573"],["siyahbeyaz","Siyah beyaz","#111111","#FFFFFF"]];
 function applyTheme(){
   const r=document.documentElement;
@@ -1189,7 +1199,7 @@ function viewSayac(){
     '<div class="zikir-head">'+(src?'<div class="src">'+esc(src)+'</div>':'')+'<div class="ar'+(longAr?' long':'')+'" lang="ar">'+esc(z.ar||"")+'</div><div class="tr">'+esc(z.ok&&z.tr.includes("…")?z.ok:z.tr)+'</div>'+(z.ok&&!z.tr.includes("…")?'<div class="mn" style="font-style:italic">'+esc(z.ok)+'</div>':'')+'<div class="mn">'+esc(z.mn||"")+'</div>'+
       (S.mode==="serbest"?'<button class="change" data-go="zikirler">Zikri değiştir</button>':S.mode==="diger"?'<button class="change" data-go="tesbihler">Tesbihi değiştir</button>':'')+'</div>'+
     '<div class="ringwrap"><button class="tap" id="tap" aria-label="Say. Şu an '+count+' / '+target+'">'+ringSVG(count,target)+
-      '<div class="tap-center"><div class="count">'+fmt(count)+'</div><div class="of">/ '+fmt(target)+'</div>'+(!seq && x.laps>0 ? '<div class="turpill">'+x.laps+'. tur</div>' : seq ? '<div class="turpill soft">Adım '+(seq.st.step+1)+' / '+seq.steps.length+'</div>' : '')+'<div class="done-badge">'+(done?(lastStep?"Hepsi tamam":"Tamamlandı"):"")+'</div></div></button>'+(IOS_TAP_SWITCH&&S.settings.vib?hswGrid():'')+'</div>'+
+      '<div class="tap-center"><div class="count">'+fmt(count)+'</div><div class="of">/ '+fmt(target)+'</div>'+(!seq && x.laps>0 ? '<div class="turpill">'+x.laps+'. tur</div>' : seq ? '<div class="turpill soft">Adım '+(seq.st.step+1)+' / '+seq.steps.length+'</div>' : '')+'<div class="done-badge">'+(done?(lastStep?"Hepsi tamam":"Tamamlandı"):"")+'</div></div></button>'+(IOS_TAP_SWITCH&&S.settings.vib&&Date.now()>=hapPauseUntil?hswGrid():'')+'</div>'+
     (done && (S.mode==="diger"||S.mode==="serbest") ? siradakiKart() : '')+
     kasem+
     (!seq
@@ -1264,15 +1274,15 @@ function doTap(){
     st.count++; addDaily(seq.statId(st.step),1);
     const idx=st.step, cur=steps[idx];
     if(st.count>=cur.n){
-      if(idx===steps.length-1){ if(seq.item){ bitir(seq.item.id); if(S.mode==="diger"||S.mode==="serbest") setTimeout(()=>{ if(tab==="sayac" && !document.getElementById("sheetHost").firstElementChild) openNext(); },900); } vibrate([300,120,300,120,500]); bell(); toast(S.mode==="tesbihat"?"Tesbihat tamamlandı. Kabul olsun.":"Hepsi tamamlandı. Kabul olsun."); }
-      else { vibrate([200,80,200]); chime(); setTimeout(()=>{ if(st.step===idx && st.count>=cur.n){ st.step++; st.count=0; save(); if(tab==="sayac") render(); } },700); }
+      if(idx===steps.length-1){ if(seq.item){ bitir(seq.item.id); if(S.mode==="diger"||S.mode==="serbest") setTimeout(()=>{ if(tab==="sayac" && !document.getElementById("sheetHost").firstElementChild) openNext(); },900); } milestone(VIB_BITTI); bell(); toast(S.mode==="tesbihat"?"Tesbihat tamamlandı. Kabul olsun.":"Hepsi tamamlandı. Kabul olsun."); }
+      else { milestone(VIB_GECIS); chime(); setTimeout(()=>{ if(st.step===idx && st.count>=cur.n){ st.step++; st.count=0; save(); if(tab==="sayac") render(); } },700); }
     } else { vibrate(18); tick(); }
   } else {
     const id=curId(), z=zById(id), c=ctr(id), t=targetOf(id);
     if(c.count>=t) c.count=0;
     c.count++; c.total++; addDaily(id,1);
-    if(c.count>=t){ c.laps++; bitir(id); if(S.mode==="diger"||S.mode==="serbest") setTimeout(()=>{ if(tab==="sayac" && !document.getElementById("sheetHost").firstElementChild) openNext(); },900); vibrate([300,120,300,120,500]); bell(); toast(fmt(t)+" tamamlandı · "+c.laps+". tur"); }
-    else if(z.kasem && c.count%z.kasem.her===0){ vibrate([250,100,250,100,250]); kasemBell(); toast(fmt(c.count)+" · Kasem: "+z.kasem.tr); }
+    if(c.count>=t){ c.laps++; bitir(id); if(S.mode==="diger"||S.mode==="serbest") setTimeout(()=>{ if(tab==="sayac" && !document.getElementById("sheetHost").firstElementChild) openNext(); },900); milestone(VIB_BITTI); bell(); toast(fmt(t)+" tamamlandı · "+c.laps+". tur"); }
+    else if(z.kasem && c.count%z.kasem.her===0){ milestone(VIB_YUZ); kasemBell(); toast(fmt(c.count)+" · Kasem: "+z.kasem.tr); }
     else if(!z.kasem && S.settings.every33 && t>33 && t%33===0 && c.count%33===0){ vibrate([120,60,120]); chime(); }
     else { vibrate(18); tick(); }
   }
